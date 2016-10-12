@@ -1,24 +1,22 @@
  {
-    "name": "ensphere/core",
-    "description": "",
-    "keywords": [
-        "Ensphere Core"
-    ],
-    "license": "MIT",
-    "type": "ensphere",
-    "repositories": [
-        {
-            "type": "composer",
-            "url": "http://modules.testing.pm"
-        }
-    ],
-    "autoload": {
-        "psr-4": { 
-            "EnsphereCore\\": "Ensphere/"
-        }
-    },
-    "config": {
-        "preferred-install": "dist",
-        "secure-http": false
-    }
+ 	"name": "ensphere/core",
+ 	"description": "",
+ 	"keywords": [ "Ensphere Core" ],
+ 	"license": "MIT",
+ 	"type": "project",
+ 	"repositories": [
+	 	{
+	 		"type": "composer",
+	 		"url": "http://modules.testing.pm"
+	 	}
+ 	],
+ 	"autoload": {
+ 		"psr-4": { 
+ 			"EnsphereCore\\": "Ensphere/"
+ 		}
+ 	},
+	"config": {
+		"preferred-install": "dist",
+		"secure-http": false
+	}
 }
