@@ -4,6 +4,9 @@
  	"keywords": [ "Ensphere Core" ],
  	"license": "MIT",
  	"type": "project",
+ 	"require" : {
+ 		"matthiasmullie/minify": "^1.3"
+ 	},
  	"repositories": [
 	 	{
 	 		"type": "composer",
