@@ -1,0 +1,23 @@
+{
+	"middleware" : [
+
+	],
+	"routeMiddleware" : {
+
+	},
+	"middlewareGroups" : {
+
+	},
+	"providers" : [
+		"Ensphere\\Ensphere\\Providers\\AppServiceProvider",
+		"Ensphere\\Ensphere\\Providers\\ConfigServiceProvider",
+		"Ensphere\\Ensphere\\Providers\\EventServiceProvider",
+		"Ensphere\\Ensphere\\Providers\\RouteServiceProvider"
+	],
+	"aliases" : {
+
+    },
+	"contracts" : {
+
+	}
+}
