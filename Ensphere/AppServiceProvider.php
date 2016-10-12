@@ -23,8 +23,8 @@ class AppServiceProvider extends ServiceProvider
     public function boot()
     {
     	$this->publishes([
-    		__DIR__ . '/../ensphere-assets.json' => base_path( 'EnsphereCore/ensphere-assets.json' ),
-    		__DIR__ . '/../ensphere-registration.json' => base_path( 'EnsphereCore/ensphere-registration.json' )
+    		__DIR__ . '/../ensphere.assets.json' => base_path( 'EnsphereCore/ensphere-assets.json' ),
+    		__DIR__ . '/../ensphere.registration.json' => base_path( 'EnsphereCore/ensphere-registration.json' )
     	], 'config' );
     }
 
