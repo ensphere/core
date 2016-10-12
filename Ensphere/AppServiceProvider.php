@@ -33,17 +33,17 @@ class AppServiceProvider extends ServiceProvider
     public function register()
     {
     	$this->commands([
-		RenameCommand::class;
-		ExportCommand::class;
-		ImportCommand::class;
-		BowerCommand::class;
-		MigrateCommand::class;
-		RegistrationCommand::class;
-		InstallCommand::class;
-		UpdateCommand::class;
-		MakeCommand::class;
-		DatabaseCommand::class;
-		ModulesCommand::class;
-    	]);
+    		RenameCommand::class,
+    		ExportCommand::class,
+    		ImportCommand::class,
+    		BowerCommand::class,
+    		MigrateCommand::class,
+    		RegistrationCommand::class,
+    		InstallCommand::class,
+    		UpdateCommand::class,
+    		MakeCommand::class,
+    		DatabaseCommand::class,
+    		ModulesCommand::class,
+    		]);
     }
 }
