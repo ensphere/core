@@ -153,6 +153,51 @@ class Command extends IlluminateCommand {
 	}
 
 	/**
+	 * [rel2abs description]
+	 * @param  [type] $rel  [description]
+	 * @param  [type] $base [description]
+	 * @return [type]       [description]
+	 */
+	protected function rel2abs( $rel, $base )
+	{
+
+		// parse base URL  and convert to local variables: $scheme, $host,  $path
+		extract( parse_url( $base ) );
+
+		if ( strpos( $rel,"//" ) === 0 ) {
+			return $scheme . ':' . $rel;
+		}
+
+		// return if already absolute URL
+		if ( parse_url( $rel, PHP_URL_SCHEME ) != '' ) {
+			return $rel;
+		}
+
+		// queries and anchors
+		if ( $rel[0] == '#' || $rel[0] == '?' ) {
+			return $base . $rel;
+		}
+
+		// remove non-directory element from path
+		$path = preg_replace( '#/[^/]*$#', '', $path );
+
+		// destroy path if relative url points to root
+		if ( $rel[0] ==  '/' ) {
+			$path = '';
+		}
+
+		// dirty absolute URL
+		$abs = $host . $path . "/" . $rel;
+
+		// replace '//' or  '/./' or '/foo/../' with '/'
+		$abs = preg_replace( "/(\/\.?\/)/", "/", $abs );
+		$abs = preg_replace( "/\/(?!\.\.)[^\/]+\/\.\.\//", "/", $abs );
+
+		// absolute URL is ready!
+		return $scheme . '://' . $abs;
+	}
+
+	/**
 	 * [buildCombinedAssets description]
 	 * @param  [type] $assetGroups [description]
 	 * @return [type]              [description]
@@ -162,7 +207,17 @@ class Command extends IlluminateCommand {
 		foreach( $assetGroups as $saveAs => $assets ) {
 			$data = '';
 			foreach( $assets as $asset ) {
-				$data .= file_get_contents( public_path( ltrim( $asset, '/' ) ) );
+				$_data = file_get_contents( public_path( ltrim( $asset, '/' ) ) );
+				if( $saveAs === 'stylesheets.css' ) {
+					if( preg_match_all( "#url\(['\"']?([^\'\"')]+)['\"']?\)#is", $_data, $matches ) ) {
+						$path = preg_replace( "#(.+)/[^/]+\.css#is", "$1/", $asset );
+						foreach( $matches[1] as $assetPath ) {
+							$newFilePath = $this->rel2abs( $assetPath, env( 'APP_URL' ) . ltrim( $path, '/' ) );
+							$_data = str_replace( $assetPath, $newFilePath, $_data );
+						}
+					}
+				}
+				$data .= $_data;
 			}
 			if( $saveAs === 'javascripts.js' ) {
 
@@ -175,13 +230,11 @@ class Command extends IlluminateCommand {
 				file_put_contents( public_path( $saveAs ), $data );
 
 			} else {
-
 				if( $minify ) {
 					$minifier = new \MatthiasMullie\Minify\CSS;
 					$minifier->add( $data );
 					$data = $minifier->minify();
 				}
-
 				file_put_contents( public_path( $saveAs ), $data );
 			}
 		}
@@ -199,11 +252,11 @@ class Command extends IlluminateCommand {
 			$css = array_merge( $this->getStyleFiles(), $this->getModuleCssFiles() );
 		} else {
 			$this->buildCombinedAssets([
-				'javascripts.js' => $this->getModuleJsFiles(),
-				'stylesheets.css' => $this->getModuleCssFiles()
+				'javascripts.js' 		=>  array_merge( $this->getJavascriptFiles(), $this->getModuleJsFiles() ),
+				'stylesheets.css' 	=> array_merge( $this->getStyleFiles(), $this->getModuleCssFiles() )
 			]);
-			$js = array_merge( $this->getJavascriptFiles(), ['/javascripts.js'] );
-			$css = array_merge( $this->getStyleFiles(), ['/stylesheets.css'] );
+			$js =  ['/javascripts.js'];
+			$css = ['/stylesheets.css'];
 		}
 		file_put_contents( $this->writePath . 'loader.blade.php', self::assetLoaderTemplate( $js, $css ) );
 	}
@@ -278,9 +331,6 @@ class Command extends IlluminateCommand {
 	protected function getArguments()
 	{
 		return [];
-		return [
-			['example', InputArgument::REQUIRED, 'An example argument.'],
-		];
 	}
 
 	/**
@@ -291,9 +341,6 @@ class Command extends IlluminateCommand {
 	protected function getOptions()
 	{
 		return [];
-		return [
-			['example', null, InputOption::VALUE_OPTIONAL, 'An example option.', null],
-		];
 	}
 
 }
