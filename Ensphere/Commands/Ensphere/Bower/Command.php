@@ -213,7 +213,7 @@ class Command extends IlluminateCommand {
 						$path = preg_replace( "#(.+)/[^/]+\.css#is", "$1/", $asset );
 						foreach( $matches[1] as $assetPath ) {
 							$newFilePath = $this->rel2abs( $assetPath, env( 'APP_URL' ) . ltrim( $path, '/' ) );
-							$_data = str_replace( $assetPath, $newFilePath, $_data, 1 );
+							$_data = str_replace( $assetPath, $newFilePath, $_data );
 						}
 					}
 				}
