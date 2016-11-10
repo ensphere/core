@@ -223,7 +223,7 @@ class Command extends IlluminateCommand {
 							$minifier->add( $_data );
 							$_data = $minifier->minify();
 						}
-						$data .= ";(function(){ try { \n" . $_data . " \n } catch(e) { console.log('[" . $asset . "]: ' + e.message );}})();\n";
+						$data .= "try { \n;(function(){" . $_data . "})();\n } catch(e) { console.log('[" . $asset . "]: ' + e.message );}\n";
 					}
 				}
 			}
