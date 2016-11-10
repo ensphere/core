@@ -218,16 +218,17 @@ class Command extends IlluminateCommand {
 					}
 					$data .= $_data;
 				} else {
-					$data .= ";(function(){ " . $_data . " })();\n";
+					if( $saveAs === 'javascripts.js' ) {
+						if( $minify ) {
+							$minifier = new \MatthiasMullie\Minify\JS;
+							$minifier->add( $_data );
+							$_data = $minifier->minify();
+						}
+						$data .= ";(function(){ \n" . $_data . " \n})();\n";
+					}
 				}
 			}
 			if( $saveAs === 'javascripts.js' ) {
-
-				if( $minify ) {
-					$minifier = new \MatthiasMullie\Minify\JS;
-					$minifier->add( $data );
-					$data = $minifier->minify();
-				}
 
 				file_put_contents( public_path( $saveAs ), $data );
 
@@ -256,7 +257,7 @@ class Command extends IlluminateCommand {
 			$this->buildCombinedAssets([
 				'javascripts.js' 		=>  array_merge( $this->getJavascriptFiles(), $this->getModuleJsFiles() ),
 				'stylesheets.css' 	=> array_merge( $this->getStyleFiles(), $this->getModuleCssFiles() )
-			], false );
+			] );
 			$js =  ['/javascripts.js'];
 			$css = ['/stylesheets.css'];
 		}
