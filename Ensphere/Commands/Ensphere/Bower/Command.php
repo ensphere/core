@@ -213,7 +213,7 @@ class Command extends IlluminateCommand {
 						$path = preg_replace( "#(.+)/[^/]+\.css#is", "$1/", $asset );
 						foreach( $matches[1] as $assetPath ) {
 							$newFilePath = $this->rel2abs( $assetPath, env( 'APP_URL' ) . ltrim( $path, '/' ) );
-							$_data = str_replace( $assetPath, $newFilePath, $_data );
+							$_data = str_replace( $assetPath, $newFilePath, $_data, 1 );
 						}
 					}
 				}
@@ -254,7 +254,7 @@ class Command extends IlluminateCommand {
 			$this->buildCombinedAssets([
 				'javascripts.js' 		=>  array_merge( $this->getJavascriptFiles(), $this->getModuleJsFiles() ),
 				'stylesheets.css' 	=> array_merge( $this->getStyleFiles(), $this->getModuleCssFiles() )
-			]);
+			], false );
 			$js =  ['/javascripts.js'];
 			$css = ['/stylesheets.css'];
 		}
