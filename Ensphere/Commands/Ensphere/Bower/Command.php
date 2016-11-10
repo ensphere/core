@@ -141,7 +141,6 @@ class Command extends IlluminateCommand {
 	 * @return [type]           [description]
 	 */
 	public static function assetLoaderTemplate( $jsFiles, $cssFiles ) {
-
 		$return = '';
 		foreach( $cssFiles as $file ) {
 			$return .= "<link href='{$file}' rel='stylesheet' type='text/css'>\n\r";
@@ -244,6 +243,23 @@ class Command extends IlluminateCommand {
 	}
 
 	/**
+	 * [getNewVersion description]
+	 * @return [type] [description]
+	 */
+	protected function getNewVersion()
+	{
+		$versionFilePath = base_path( 'asset_version.json' );
+		if( ! file_exists( $versionFilePath ) ) {
+			file_put_contents( $versionFilePath, '{ "version" : "0000000001" }' );
+		}
+		$versionFile = json_decode( file_get_contents( $versionFilePath ) );
+		$version = (int)$versionFile->version;
+		$newVersion = str_pad( ($version+1), 10, "0", STR_PAD_LEFT );
+		file_put_contents( $versionFilePath, '{ "version" : "' . $newVersion . '" }' );
+		return $newVersion;
+	}
+
+	/**
 	 * [generateTemplate description]
 	 * @return [type] [description]
 	 */
@@ -254,12 +270,13 @@ class Command extends IlluminateCommand {
 			$js = array_merge( $this->getJavascriptFiles(), $this->getModuleJsFiles() );
 			$css = array_merge( $this->getStyleFiles(), $this->getModuleCssFiles() );
 		} else {
+			$newVersion = $this->getNewVersion();
 			$this->buildCombinedAssets([
 				'javascripts.js' 		=>  array_merge( $this->getJavascriptFiles(), $this->getModuleJsFiles() ),
 				'stylesheets.css' 	=> array_merge( $this->getStyleFiles(), $this->getModuleCssFiles() )
 			] );
-			$js =  ['/javascripts.js'];
-			$css = ['/stylesheets.css'];
+			$js =  ['/javascripts.js?ver=' . $newVersion];
+			$css = ['/stylesheets.css?ver=' . $newVersion];
 		}
 		file_put_contents( $this->writePath . 'loader.blade.php', self::assetLoaderTemplate( $js, $css ) );
 	}
