@@ -216,8 +216,10 @@ class Command extends IlluminateCommand {
 							$_data = str_replace( $assetPath, $newFilePath, $_data );
 						}
 					}
+					$data .= $_data;
+				} else {
+					$data .= ";(function(){ " . $_data . " })();\n";
 				}
-				$data .= $_data;
 			}
 			if( $saveAs === 'javascripts.js' ) {
 
