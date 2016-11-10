@@ -218,11 +218,11 @@ class Command extends IlluminateCommand {
 					$data .= $_data;
 				} else {
 					if( $saveAs === 'javascripts.js' ) {
-						if( $minify ) {
-							$minifier = new \MatthiasMullie\Minify\JS;
-							$minifier->add( $_data );
-							$_data = $minifier->minify();
-						}
+						// if( $minify ) {
+						// 	$minifier = new \MatthiasMullie\Minify\JS;
+						// 	$minifier->add( $_data );
+						// 	$_data = $minifier->minify();
+						// }
 						$data .= "try { \n;(function(){" . $_data . "})();\n } catch(e) { console.log('[" . $asset . "]: ' + e.message );}\n";
 					}
 				}
