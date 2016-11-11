@@ -295,7 +295,6 @@ class Command extends IlluminateCommand {
 		if ( \App::environment( 'local' ) ) {
 			$js = array_merge( $this->getJavascriptFiles(), $this->getModuleJsFiles() );
 			$css = array_merge( $this->getStyleFiles(), $this->getModuleCssFiles() );
-			dd($js, $css);
 		} else {
 			$newVersion = $this->getNewVersion();
 			$this->buildCombinedAssets([
