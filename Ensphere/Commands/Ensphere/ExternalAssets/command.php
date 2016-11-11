@@ -20,6 +20,8 @@ class Command extends IlluminateCommand {
 	 */
 	protected $description = 'Retrieves external assets and stores localy';
 
+	protected $externalPath = '';
+
 	/**
 	 * [__construct description]
 	 */
@@ -34,7 +36,39 @@ class Command extends IlluminateCommand {
 	 */
 	public function fire()
 	{
-		$this->info('running...');
+		$this->checkStorageFolder();
+		$this->getExternalFilesAndStoreLocally();
+	}
+
+	/**
+	 * [checkStorageFolder description]
+	 * @return [type] [description]
+	 */
+	protected function checkStorageFolder()
+	{
+		$this->externalPath = public_path( 'external' );
+		if( ! file_exists( $this->externalPath ) ) {
+			$this->info( 'creating local storage folder for external assets...' );
+			mkdir( $this->externalPath, 0777 );
+		}
+	}
+
+	/**
+	 * [getExternalFilesAndStoreLocally description]
+	 * @return [type] [description]
+	 */
+	protected function getExternalFilesAndStoreLocally()
+	{
+		$assets =  base_path( 'EnsphereCore/ensphere-external-assets.json' );
+		if( ! file_exists( $assets ) ) return $this->info( 'no external images file found..' );
+		$data = json_decode( file_get_contents( $assets ) );
+		foreach( $data->assets as $asset ) {
+			if( $contents = @file_get_contents( $asset ) ) {
+				$this->info( "fetching {$asset}..." );
+				$extension = ( preg_match( "#css(?:\?.+)$#is", $asset ) ? 'css' : 'js' );
+				file_put_contents( public_path( '/external/' . sha1( $asset ) . ".{$extension}" ), $contents );
+			}
+		}
 	}
 
 }

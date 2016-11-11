@@ -197,12 +197,38 @@ class Command extends IlluminateCommand {
 	}
 
 	/**
+	 * [externalAssetsToLocalAssets description]
+	 * @param  [type] $assetGroups [description]
+	 * @return [type]              [description]
+	 */
+	protected function externalAssetsToLocalAssets( $assetGroups )
+	{
+		$external = [ 'assets' => [] ];
+		foreach( $assetGroups['stylesheets.css'] as $key => $stylesheet ) {
+			if( preg_match( "#^https?#is", $stylesheet ) ) {
+				$external['assets'][] = $stylesheet;
+				$assetGroups['stylesheets.css'][$key] = "/external/" . sha1( $stylesheet ) . '.css';
+			}
+		}
+		foreach( $assetGroups['javascripts.js'] as $key => $javascript ) {
+			if( preg_match( "#^https?#is", $javascript ) ) {
+				$external['assets'][] = $javascript;
+				$assetGroups['javascripts.js'][$key] = "/external/" . sha1( $javascript ) . '.js';
+			}
+		}
+		file_put_contents( base_path( 'EnsphereCore/ensphere-external-assets.json' ), json_encode( $external, JSON_PRETTY_PRINT ) );
+		$this->call( 'ensphere:external-assets' );
+		return $assetGroups;
+	}
+
+	/**
 	 * [buildCombinedAssets description]
 	 * @param  [type] $assetGroups [description]
 	 * @return [type]              [description]
 	 */
 	protected function buildCombinedAssets( $assetGroups, $minify = true )
 	{
+		$assetGroups = $this->externalAssetsToLocalAssets( $assetGroups );
 		foreach( $assetGroups as $saveAs => $assets ) {
 			$data = '';
 			foreach( $assets as $asset ) {
@@ -269,6 +295,7 @@ class Command extends IlluminateCommand {
 		if ( \App::environment( 'local' ) ) {
 			$js = array_merge( $this->getJavascriptFiles(), $this->getModuleJsFiles() );
 			$css = array_merge( $this->getStyleFiles(), $this->getModuleCssFiles() );
+			dd($js, $css);
 		} else {
 			$newVersion = $this->getNewVersion();
 			$this->buildCombinedAssets([

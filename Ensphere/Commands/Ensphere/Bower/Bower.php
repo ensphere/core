@@ -73,7 +73,13 @@ class Bower {
 	public function getJavascriptFiles() {
 		$javascripts = [];
 		foreach( $this->files as $file ) {
-			if( preg_match( "#\.js$#is", $file ) ) $javascripts[] = $this->uri . $file;
+			if( preg_match( "#\.js$#is", $file ) ) {
+				if( preg_match( "#^https?#is", $file ) ) {
+					$javascripts[] = $file;
+				} else {
+					$javascripts[] = $this->uri . $file;
+				}
+			}
 		}
 		return $javascripts;
 	}
@@ -85,7 +91,13 @@ class Bower {
 	public function getStyleFiles() {
 		$styles = [];
 		foreach( $this->files as $file ) {
-			if( preg_match( "#\.css$#is", $file ) ) $styles[] = $this->uri . $file;
+			if( preg_match( "#css(?:\?.+)$#is", $file ) ) {
+				if( preg_match( "#^https?#is", $file ) ) {
+					$styles[] = $file;
+				} else {
+					$styles[] = $this->uri . $file;
+				}
+			}
 		}
 		return $styles;
 	}
