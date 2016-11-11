@@ -26,7 +26,7 @@ class AppServiceProvider extends ServiceProvider
 	{
 		$this->app->booted( function() {
 			$schedule = $this->app->make( Schedule::class );
-			$schedule->command( 'ensphere:external-assets' )->everyHour();
+			$schedule->command( 'ensphere:external-assets' )->hourly();
 		});
 		$this->publishes([
 			__DIR__ . '/../ensphere.assets.json' => base_path( 'EnsphereCore/ensphere-assets.json' ),
