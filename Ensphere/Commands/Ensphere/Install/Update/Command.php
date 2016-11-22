@@ -67,9 +67,48 @@ class Command extends IlluminateCommand {
 	private function publishVendorAssets()
 	{
 		$this->info('publishing config files...');
+		$this->cleanModulePackageAssetFolders();
 		$this->info( shell_exec( "php artisan vendor:publish --tag=config" ) );
 		$this->info('pushing module assets to application...');
 		$this->info( shell_exec( "php artisan vendor:publish --tag=forced --force" ) );
+	}
+
+	/**
+	 * [cleanModulePackageAssetFolders description]
+	 * @return [type] [description]
+	 */
+	protected function cleanModulePackageAssetFolders()
+	{
+		$iterator = new RecursiveIteratorIterator( new RecursiveDirectoryIterator( public_path( 'package' ) ), RecursiveIteratorIterator::SELF_FIRST );
+		$thisData = $this->getCurrentVendorAndModuleName();
+		foreach( $iterator as $file ) {
+			if( ! in_array( $file->getBasename(), [ '.', '..' ]) && $file->isDir() ) {
+				$relPath = ltrim( str_replace( public_path( 'package' ), '', $file->getPathname() ), '/' );
+				if( count( explode( "/", $relPath ) ) === 2 ) {
+					if( $thisData['vendor'] . '/' . $thisData['module'] !== $relPath ) {
+						$this->deleteFolderAndContents( $file->getPathname() );
+					}
+				}
+			}
+		}
+	}
+
+	/**
+	 * [deleteFolderAndContents description]
+	 * @param  [type] $folderPath [description]
+	 * @return [type]             [description]
+	 */
+	protected function deleteFolderAndContents( $folderPath )
+	{
+		$it = new RecursiveDirectoryIterator( $folderPath, RecursiveDirectoryIterator::SKIP_DOTS );
+		$files = new RecursiveIteratorIterator( $it, RecursiveIteratorIterator::CHILD_FIRST );
+		foreach( $files as $file ) {
+			if ( $file->isDir() ){
+				rmdir( $file->getRealPath() );
+			} else {
+				unlink( $file->getRealPath() );
+			}
+		}
 	}
 
 	/**
