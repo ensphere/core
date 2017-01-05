@@ -12,18 +12,13 @@ class Command extends IlluminateCommand {
 	use ModuleTrait;
 
 	/**
-	 * The console command name.
-	 *
-	 * @var string
-	 */
-	protected $name = 'ensphere:rename';
-
-	/**
 	 * The console command description.
 	 *
 	 * @var string
 	 */
 	protected $description = 'Rename your module';
+
+	protected $signature = 'ensphere:rename {--vendor= : provide the vendor upfront} {--module= : provide the module name upfront}';
 
 	/**
 	 * [$vendor description]
@@ -92,9 +87,15 @@ class Command extends IlluminateCommand {
 	 */
 	public function fire()
 	{
-		$this->vendor = $this->ask('Whats your Vendor name?');
+		if( ! $vendor = $this->option( 'vendor' ) ) {
+			$vendor = $this->ask('Whats your Vendor name?');
+		}
+		$this->vendor = $vendor;
 		$this->camelCasedVendor = ucfirst( camel_case( $this->vendor ) );
-		$this->module = $this->ask('Whats your Module name?');
+		if( ! $module = $this->option( 'module' ) ) {
+			$module = $this->ask('Whats your Module name?');
+		}
+		$this->module = $module;
 		$this->camelCasedModule = ucfirst( camel_case( $this->module ) );
 		if( $this->isOkToRun() ) {
 			$this->laravelRename();
