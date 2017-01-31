@@ -143,7 +143,7 @@ class Command extends IlluminateCommand {
 	public static function assetLoaderTemplate( $jsFiles, $cssFiles ) {
 		$return = '';
 		foreach( $cssFiles as $file ) {
-			$return .= "<link href='{$file}' rel='stylesheet' type='text/css'>\n\r";
+			$return .= "<link defer href='{$file}' rel='stylesheet' type='text/css'>\n\r";
 		}
 		foreach( $jsFiles as $file ) {
 			$return .= "<script src='{$file}'></script>\n\r";
@@ -204,16 +204,25 @@ class Command extends IlluminateCommand {
 	protected function externalAssetsToLocalAssets( $assetGroups )
 	{
 		$external = [ 'assets' => [] ];
+		$temp = [];
 		foreach( $assetGroups['stylesheets.css'] as $key => $stylesheet ) {
 			if( preg_match( "#^https?#is", $stylesheet ) ) {
 				$external['assets'][] = $stylesheet;
 				$assetGroups['stylesheets.css'][$key] = "/external/" . sha1( $stylesheet ) . '.css';
+				$temp[] = [ 
+					'rel' => $stylesheet,
+					'loc' => "/external/" . sha1( $stylesheet ) . '.css'
+				];	
 			}
 		}
 		foreach( $assetGroups['javascripts.js'] as $key => $javascript ) {
 			if( preg_match( "#^https?#is", $javascript ) ) {
 				$external['assets'][] = $javascript;
 				$assetGroups['javascripts.js'][$key] = "/external/" . sha1( $javascript ) . '.js';
+				$temp[] = [ 
+					'rel' => $javascript,
+					'loc' => "/external/" . sha1( $javascript ) . '.js'
+				];	
 			}
 		}
 		file_put_contents( base_path( 'EnsphereCore/ensphere-external-assets.json' ), json_encode( $external, JSON_PRETTY_PRINT ) );
@@ -244,12 +253,7 @@ class Command extends IlluminateCommand {
 					$data .= $_data;
 				} else {
 					if( $saveAs === 'javascripts.js' ) {
-						// if( $minify ) {
-						// 	$minifier = new \MatthiasMullie\Minify\JS;
-						// 	$minifier->add( $_data );
-						// 	$_data = $minifier->minify();
-						// }
-						$data .= "try { \n;(function(){" . $_data . "})();\n } catch(e) { console.log('[" . $asset . "]: ' + e.message );}\n";
+						$data .= "try { \n;(function(){\n" . $_data . "\n})();\n } catch(e) { console.log('[" . $asset . "]: ' + e.message );}\n";
 					}
 				}
 			}
@@ -291,14 +295,13 @@ class Command extends IlluminateCommand {
 	 */
 	private function generateTemplate()
 	{
-
 		if ( \App::environment( 'local' ) ) {
 			$js = array_merge( $this->getJavascriptFiles(), $this->getModuleJsFiles() );
 			$css = array_merge( $this->getStyleFiles(), $this->getModuleCssFiles() );
 		} else {
 			$newVersion = $this->getNewVersion();
 			$this->buildCombinedAssets([
-				'javascripts.js' 		=>  array_merge( $this->getJavascriptFiles(), $this->getModuleJsFiles() ),
+				'javascripts.js' 	=>  array_merge( $this->getJavascriptFiles(), $this->getModuleJsFiles() ),
 				'stylesheets.css' 	=> array_merge( $this->getStyleFiles(), $this->getModuleCssFiles() )
 			] );
 			$js =  ['/javascripts.js?ver=' . $newVersion];
