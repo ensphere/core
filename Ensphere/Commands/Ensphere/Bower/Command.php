@@ -163,6 +163,23 @@ class Command extends IlluminateCommand {
 	}
 
 	/**
+	 * [assetLoaderTemplateLocal description]
+	 * @param  [type] $jsFiles  [description]
+	 * @param  [type] $cssFiles [description]
+	 * @return [type]           [description]
+	 */
+	public static function assetLoaderTemplateLocal( $jsFiles, $cssFiles ) {
+		$return = '';
+		foreach( $cssFiles as $file ) {
+			$return .= "<link defer href='{$file}' rel='stylesheet' type='text/css'>\n\r";
+		}
+		foreach( $jsFiles as $file ) {
+			$return .= "<script src='{$file}'></script>\n\r";
+		}
+		return $return;
+	}
+
+	/**
 	 * [rel2abs description]
 	 * @param  [type] $rel  [description]
 	 * @param  [type] $base [description]
@@ -309,6 +326,7 @@ class Command extends IlluminateCommand {
 		if ( \App::environment( 'local' ) ) {
 			$js = array_merge( $this->getJavascriptFiles(), $this->getModuleJsFiles() );
 			$css = array_merge( $this->getStyleFiles(), $this->getModuleCssFiles() );
+			file_put_contents( $this->writePath . 'loader.blade.php', self::assetLoaderTemplateLocal( $js, $css ) );
 		} else {
 			$newVersion = $this->getNewVersion();
 			$this->buildCombinedAssets([
@@ -317,8 +335,8 @@ class Command extends IlluminateCommand {
 			] );
 			$js =  ['/javascripts.js?ver=' . $newVersion];
 			$css = ['/stylesheets.css?ver=' . $newVersion];
+			file_put_contents( $this->writePath . 'loader.blade.php', self::assetLoaderTemplate( $js, $css ) );
 		}
-		file_put_contents( $this->writePath . 'loader.blade.php', self::assetLoaderTemplate( $js, $css ) );
 	}
 
 	/**
