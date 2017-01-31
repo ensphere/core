@@ -141,13 +141,24 @@ class Command extends IlluminateCommand {
 	 * @return [type]           [description]
 	 */
 	public static function assetLoaderTemplate( $jsFiles, $cssFiles ) {
-		$return = '';
-		foreach( $cssFiles as $file ) {
-			$return .= "<link defer href='{$file}' rel='stylesheet' type='text/css'>\n\r";
+		$return = '
+		<script type="text/javascript">
+		function loadAssets() {
+			var css = [ "' . implode( '","', $cssFiles ) . '"];
+			var js =  [ "' . implode( '","', $jsFiles ) . '"];
+			js.forEach(function(src){
+				var element = document.createElement("script");  element.src = src;  document.body.appendChild(element);
+			});
+			css.forEach(function(href){
+				var element = document.createElement("link"); element.href = href; element.rel = "stylesheet"; element.type = "text/css"; element.onload = function(){ if (window.jQuery) { $(document).trigger("ready"); $(window).trigger("load"); } };  document.body.appendChild(element);
+			});
 		}
-		foreach( $jsFiles as $file ) {
-			$return .= "<script src='{$file}'></script>\n\r";
-		}
+		if (window.addEventListener)
+			window.addEventListener("load", loadAssets, false);
+		else if (window.attachEvent)
+			window.attachEvent("onload", loadAssets);
+		else window.onload = loadAssets;
+		</script>';
 		return $return;
 	}
 
