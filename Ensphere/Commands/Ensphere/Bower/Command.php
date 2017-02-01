@@ -143,21 +143,25 @@ class Command extends IlluminateCommand {
 	public static function assetLoaderTemplate( $jsFiles, $cssFiles ) {
 		$return = '
 		<script type="text/javascript">
-		function loadAssets() {
-			var css = [ "' . implode( '","', $cssFiles ) . '"];
-			var js =  [ "' . implode( '","', $jsFiles ) . '"];
-			js.forEach(function(src){
-				var element = document.createElement("script");  element.src = src;  document.body.appendChild(element);
-			});
-			css.forEach(function(href){
-				var element = document.createElement("link"); element.href = href; element.rel = "stylesheet"; element.type = "text/css"; element.onload = function(){ if (window.jQuery) { $(document).trigger("ready"); $(window).trigger("load"); } };  document.body.appendChild(element);
-			});
-		}
-		if (window.addEventListener)
-			window.addEventListener("load", loadAssets, false);
-		else if (window.attachEvent)
-			window.attachEvent("onload", loadAssets);
-		else window.onload = loadAssets;
+		var styles = [ "' . implode( '","', $cssFiles ) . '"];
+		var scripts =  [ "' . implode( '","', $jsFiles ) . '"];
+		var cb = function() {
+				window.loadStyles = function() {
+					var href = styles.shift(); var h = document.getElementsByTagName('head')[0]; var l = document.createElement('link');
+					l.rel = 'stylesheet'; l.href = href;l.onload = function(){if( styles.length !== 0 ){window.loadStyles();}};h.appendChild(l);
+				};
+				window.loadScripts = function( _callback ) {
+					var callback = _callback || function(){};
+					var src = scripts.shift(); var h = document.getElementsByTagName('head')[0]; var html = document.getElementsByTagName('html')[0]; var l = document.createElement('script');
+					l.rel = 'text/javascript'; l.src = src;
+					l.onload = function(){if( scripts.length !== 0 ) {window.loadScripts( _callback );} else {html.className += ' loaded';callback();}};h.appendChild(l);
+				};
+				window.loadStyles();
+				window.loadScripts(function(){ if( document.body ) $(document).trigger('ready'); if( document.readyState == 'complete' ) $(window).trigger('load'); });
+			};
+			var raf = requestAnimationFrame || mozRequestAnimationFrame || webkitRequestAnimationFrame || msRequestAnimationFrame;
+			if (raf) raf(cb);
+			else window.addEventListener('load', cb);
 		</script>';
 		return $return;
 	}
