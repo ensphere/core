@@ -141,10 +141,10 @@ class Command extends IlluminateCommand {
 	 * @return [type]           [description]
 	 */
 	public static function assetLoaderTemplate( $jsFiles, $cssFiles ) {
-		$return = '
+		$return = "
 		<script type="text/javascript">
-		var styles = [ "' . implode( '","', $cssFiles ) . '"];
-		var scripts =  [ "' . implode( '","', $jsFiles ) . '"];
+		var styles = [ '" . implode( "','", $cssFiles ) . "'];
+		var scripts =  [ '" . implode( "','", $jsFiles ) . "'];
 		var cb = function() {
 				window.loadStyles = function() {
 					var href = styles.shift(); var h = document.getElementsByTagName('head')[0]; var l = document.createElement('link');
@@ -162,7 +162,7 @@ class Command extends IlluminateCommand {
 			var raf = requestAnimationFrame || mozRequestAnimationFrame || webkitRequestAnimationFrame || msRequestAnimationFrame;
 			if (raf) raf(cb);
 			else window.addEventListener('load', cb);
-		</script>';
+		</script>";
 		return $return;
 	}
 
