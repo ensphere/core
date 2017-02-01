@@ -142,7 +142,7 @@ class Command extends IlluminateCommand {
 	 */
 	public static function assetLoaderTemplate( $jsFiles, $cssFiles ) {
 		$return = "
-		<script type="text/javascript">
+		<script type='text/javascript'>
 		var styles = [ '" . implode( "','", $cssFiles ) . "'];
 		var scripts =  [ '" . implode( "','", $jsFiles ) . "'];
 		var cb = function() {
