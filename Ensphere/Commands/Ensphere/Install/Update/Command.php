@@ -79,7 +79,7 @@ class Command extends IlluminateCommand {
 		$it = new RecursiveDirectoryIterator( public_path( 'vendor' ) );
 		$paths = [];
 		foreach( $it as $file ) {
-			$file->isDir() && ! in_array( $file->getFilename(), [ '.', '..' ] ) ) {
+			if( $file->isDir() && ! in_array( $file->getFilename(), [ '.', '..' ] ) ) {
 				$paths[$file->getBasename()] = $file->getRealPath();
 			}
 		}
