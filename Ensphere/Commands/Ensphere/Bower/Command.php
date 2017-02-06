@@ -70,7 +70,7 @@ class Command extends IlluminateCommand {
 	 */
 	public function fire()
 	{
-	    $this->alterGitIgnoreForNonModuleAssetDependencies();
+	    	$this->alterGitIgnoreForNonModuleAssetDependencies();
 		$it = new RecursiveDirectoryIterator( base_path() );
 		foreach( new RecursiveIteratorIterator( $it ) as $file ) {
 			if( $file->getFilename() === 'ensphere-assets.json' ) {
@@ -88,57 +88,58 @@ class Command extends IlluminateCommand {
 	}
 
 	protected function alterGitIgnoreForNonModuleAssetDependencies()
-    {
-        $modulePackages = $this->getPackages( base_path( 'EnsphereCore' ) );
-        $gitIgnoreFile = $this->getGitIgnoreFile();
-        $gitIgnoreFileSplit = explode( "\n", $gitIgnoreFile );
-        if( in_array( '#ensphere-vendor-ignore-start', $gitIgnoreFileSplit ) ) {
-            $gitIgnoreFileSplit = $this->removeExistingEnsphereIgnoreRules( $gitIgnoreFileSplit );
-        }
+	{
+		$modulePackages = $this->getPackages( base_path( 'EnsphereCore' ) );
+		$gitIgnoreFile = $this->getGitIgnoreFile();
+		$gitIgnoreFileSplit = explode( "\n", $gitIgnoreFile );
+		if( in_array( '#ensphere-vendor-ignore-start', $gitIgnoreFileSplit ) ) {
+			$gitIgnoreFileSplit = $this->removeExistingEnsphereIgnoreRules( $gitIgnoreFileSplit );
+		}
 
-        $gitIgnoreFileSplit[] = '';
-        $gitIgnoreFileSplit[] = '#ensphere-vendor-ignore-start';
-        $gitIgnoreFileSplit[] = '/public/vendor/**/*';
+		$gitIgnoreFileSplit[] = '';
+		$gitIgnoreFileSplit[] = '#ensphere-vendor-ignore-start';
+		$gitIgnoreFileSplit[] = '/public/vendor/**/*';
 
-        foreach( $modulePackages as $name => $detail ) {
-            foreach( $detail->files as $file ) {
-                $gitIgnoreFileSplit[] = "!/public/vendor/{$name}/{$file}";
-            }
-        }
-        $gitIgnoreFileSplit[] = '#ensphere-vendor-ignore-end';
-        $this->saveGitIgnoreFile( implode( "\n", $gitIgnoreFileSplit ) );
-    }
+		// foreach( $modulePackages as $name => $detail ) {
+		// 	foreach( $detail->files as $file ) {
+		// 		$gitIgnoreFileSplit[] = "!/public/vendor/{$name}/{$file}";
+		// 	}
+		// }
 
-    /**
-     * @param $split
-     * @return mixed
-     */
-    protected function removeExistingEnsphereIgnoreRules( $split )
-    {
-        $remove = false;
-        foreach( $split as $key => $line ) {
-            if( $line === '#ensphere-vendor-ignore-start' ) $remove = true;
-            if( $remove ) unset( $split[ $key ] );
-            if( $line === '#ensphere-vendor-ignore-end' ) $remove = false;
-        }
-        return $split;
-    }
+		$gitIgnoreFileSplit[] = '#ensphere-vendor-ignore-end';
+		$this->saveGitIgnoreFile( implode( "\n", $gitIgnoreFileSplit ) );
+	}
 
-    /**
-     * @param $string
-     */
-    protected function saveGitIgnoreFile( $string )
-    {
-        file_put_contents( base_path( '.gitignore' ), preg_replace( "/\n\n+/", "\n\n", $string ) );
-    }
+	/**
+	* @param $split
+	* @return mixed
+	*/
+	protected function removeExistingEnsphereIgnoreRules( $split )
+	{
+		$remove = false;
+		foreach( $split as $key => $line ) {
+			if( $line === '#ensphere-vendor-ignore-start' ) $remove = true;
+			if( $remove ) unset( $split[ $key ] );
+			if( $line === '#ensphere-vendor-ignore-end' ) $remove = false;
+		}
+		return $split;
+	}
 
-    /**
-     * @return string
-     */
-    protected function getGitIgnoreFile()
-    {
-        return file_get_contents( base_path( '.gitignore' ) );
-    }
+	/**
+	* @param $string
+	*/
+	protected function saveGitIgnoreFile( $string )
+	{
+		file_put_contents( base_path( '.gitignore' ), preg_replace( "/\n\n+/", "\n\n", $string ) );
+	}
+
+	/**
+	* @return string
+	*/
+	protected function getGitIgnoreFile()
+	{
+		return file_get_contents( base_path( '.gitignore' ) );
+	}
 
 	/**
 	 * [getPackages description]
