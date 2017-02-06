@@ -328,21 +328,23 @@ class Command extends IlluminateCommand {
 		foreach( $assetGroups as $saveAs => $assets ) {
 			$data = '';
 			foreach( $assets as $asset ) {
-				$_data = file_get_contents( public_path( ltrim( $asset, '/' ) ) );
-				if( $saveAs === 'stylesheets.css' ) {
-					if( preg_match_all( "#url\(['\"']?([^\'\"')]+)['\"']?\)#is", $_data, $matches ) ) {
-						$path = preg_replace( "#(.+)/[^/]+\.css#is", "$1/", $asset );
-						foreach( $matches[1] as $assetPath ) {
-							$newFilePath = $this->rel2abs( $assetPath, rtrim( env( 'APP_URL' ), '/' ) . '/' . ltrim( $path, '/' ) );
-							$_data = preg_replace( "#\(['\"']?" . preg_quote( $assetPath, "#" ) . "['\"']?\)#", "('" . $newFilePath . "')", $_data, 1 );
+				if( file_exists( public_path( ltrim( $asset, '/' ) ) ) ) {
+					$_data = file_get_contents( public_path( ltrim( $asset, '/' ) ) );
+					if( $saveAs === 'stylesheets.css' ) {
+						if( preg_match_all( "#url\(['\"']?([^\'\"')]+)['\"']?\)#is", $_data, $matches ) ) {
+							$path = preg_replace( "#(.+)/[^/]+\.css#is", "$1/", $asset );
+							foreach( $matches[1] as $assetPath ) {
+								$newFilePath = $this->rel2abs( $assetPath, rtrim( env( 'APP_URL' ), '/' ) . '/' . ltrim( $path, '/' ) );
+								$_data = preg_replace( "#\(['\"']?" . preg_quote( $assetPath, "#" ) . "['\"']?\)#", "('" . $newFilePath . "')", $_data, 1 );
+							}
+						}
+						$data .= $_data;
+					} else {
+						if( $saveAs === 'javascripts.js' ) {
+							$data .= "try { \n;(function(){\n" . $_data . "\n})();\n } catch(e) { console.log('[" . $asset . "]: ' + e.message );}\n";
 						}
 					}
-					$data .= $_data;
-				} else {
-					if( $saveAs === 'javascripts.js' ) {
-						$data .= "try { \n;(function(){\n" . $_data . "\n})();\n } catch(e) { console.log('[" . $asset . "]: ' + e.message );}\n";
-					}
-				}
+				} 
 			}
 			if( $saveAs === 'javascripts.js' ) {
 
