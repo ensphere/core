@@ -2,10 +2,9 @@
 
 use EnsphereCore\Commands\Ensphere\Traits\Module as ModuleTrait;
 use Illuminate\Console\Command as IlluminateCommand;
-use Symfony\Component\Console\Input\InputOption;
-use Symfony\Component\Console\Input\InputArgument;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
+use Storage, File;
 
 class Command extends IlluminateCommand {
 
@@ -67,11 +66,43 @@ class Command extends IlluminateCommand {
 	private function publishVendorAssets()
 	{
 		$this->info('publishing config files...');
+        $this->deleteNonModulesVendorAssets();
 		$this->cleanModulePackageAssetFolders();
 		$this->info( shell_exec( "php artisan vendor:publish --tag=config" ) );
 		$this->info('pushing module assets to application...');
 		$this->info( shell_exec( "php artisan vendor:publish --tag=forced --force" ) );
 	}
+
+    protected function deleteNonModulesVendorAssets()
+    {
+        $modulePackages = $this->getPackages( base_path( 'EnsphereCore' ) );
+        $it = new RecursiveDirectoryIterator( public_path( 'vendor' ) );
+        $paths = [];
+        foreach( $it as $file ) {
+            if( $file->isDir() && ! in_array( $file->getFilename(), [ '.', '..' ] ) ) {
+                $paths[$file->getBasename()] = $file->getRealPath();
+            }
+        }
+        foreach( $modulePackages as $name => $detail ) {
+            if( isset( $paths[$name] ) ) {
+                unset( $paths[$name] );
+            }
+        }
+        foreach( $paths as $path ) {
+            File::cleanDirectory( $path );
+            Storage::deleteDirectory( $path );
+            rmdir( $path );
+        }
+    }
+
+    /**
+     * [getPackages description]
+     * @param  [type] $path [description]
+     * @return [type]       [description]
+     */
+    private function getPackages( $path ) {
+        return json_decode( file_get_contents( $path . '/ensphere-assets.json' ) );
+    }
 
 	/**
 	 * [cleanModulePackageAssetFolders description]
