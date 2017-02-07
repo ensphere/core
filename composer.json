@@ -6,7 +6,7 @@
  	"type": "project",
  	"require" : {
  		"matthiasmullie/minify": "1.3.*",
- 		"php-kit/composer-bower-plugin": "^1.0"
+ 		"lukesnowden/composer-bower-plugin": "^1.0"
  	},
  	"repositories": [
 	 	{
