@@ -101,6 +101,13 @@ class Command extends IlluminateCommand {
 		$moduleData = $this->getCurrentVendorAndModuleName();
 		$gitIgnoreFileSplit[] = '';
 		$gitIgnoreFileSplit[] = '#ensphere-vendor-ignore-start';
+		$gitIgnoreFileSplit[] = '.env';
+		$gitIgnoreFileSplit[] = '.DS_Store';
+		$gitIgnoreFileSplit[] = '.idea';
+		$gitIgnoreFileSplit[] = '/vendor';
+		$gitIgnoreFileSplit[] = '/node_modules';
+		$gitIgnoreFileSplit[] = '/bower_components';
+		$gitIgnoreFileSplit[] = '';
 		$gitIgnoreFileSplit[] = '/bower.json';
 		$gitIgnoreFileSplit[] = '/public/vendor/**/*';
 		$gitIgnoreFileSplit[] = '/public/javascripts.js';
