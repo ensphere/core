@@ -98,15 +98,15 @@ class Command extends IlluminateCommand {
 
 		$gitIgnoreFileSplit[] = '';
 		$gitIgnoreFileSplit[] = '#ensphere-vendor-ignore-start';
-		$gitIgnoreFileSplit[] = '/public/vendor/**/*';
-
-		// foreach( $modulePackages as $name => $detail ) {
-		// 	foreach( $detail->files as $file ) {
-		// 		$gitIgnoreFileSplit[] = "!/public/vendor/{$name}/{$file}";
-		// 	}
-		// }
-
+		$gitIgnoreFileSplit[] = 'bower.json';
+		$gitIgnoreFileSplit[] = 'public/vendor/**/*';
+		$gitIgnoreFileSplit[] = 'public/javascripts.js';
+		$gitIgnoreFileSplit[] = 'config/packages.json';
+		$gitIgnoreFileSplit[] = 'public/stylesheets.css';
+		$gitIgnoreFileSplit[] = 'resourses/views/loader.blade.php';
+		$gitIgnoreFileSplit[] = 'EnsphereCore/ensphere-external-assets.json';
 		$gitIgnoreFileSplit[] = '#ensphere-vendor-ignore-end';
+
 		$this->saveGitIgnoreFile( implode( "\n", $gitIgnoreFileSplit ) );
 	}
 
