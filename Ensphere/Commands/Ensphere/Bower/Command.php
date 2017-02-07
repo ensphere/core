@@ -113,7 +113,7 @@ class Command extends IlluminateCommand {
 		$gitIgnoreFileSplit[] = '/public/javascripts.js';
 		$gitIgnoreFileSplit[] = '/config/packages.json';
 		$gitIgnoreFileSplit[] = '/public/stylesheets.css';
-		$gitIgnoreFileSplit[] = '/resourses/views/loader.blade.php';
+		$gitIgnoreFileSplit[] = '/resources/views/loader.blade.php';
 		$gitIgnoreFileSplit[] = '/EnsphereCore/ensphere-external-assets.json';
 		$gitIgnoreFileSplit[] = '/database/migrations/vendor/*';
 		$gitIgnoreFileSplit[] = '/database/seeds/vendor/*';
