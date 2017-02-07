@@ -5,8 +5,11 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputArgument;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
+use EnsphereCore\Commands\Ensphere\Traits\Module;
 
 class Command extends IlluminateCommand {
+
+	use Module;
 
 	/**
 	 * The console command name.
@@ -95,7 +98,7 @@ class Command extends IlluminateCommand {
 		if( in_array( '#ensphere-vendor-ignore-start', $gitIgnoreFileSplit ) ) {
 			$gitIgnoreFileSplit = $this->removeExistingEnsphereIgnoreRules( $gitIgnoreFileSplit );
 		}
-
+		$moduleData = $this->getCurrentVendorAndModuleName();
 		$gitIgnoreFileSplit[] = '';
 		$gitIgnoreFileSplit[] = '#ensphere-vendor-ignore-start';
 		$gitIgnoreFileSplit[] = 'bower.json';
@@ -105,6 +108,12 @@ class Command extends IlluminateCommand {
 		$gitIgnoreFileSplit[] = 'public/stylesheets.css';
 		$gitIgnoreFileSplit[] = 'resourses/views/loader.blade.php';
 		$gitIgnoreFileSplit[] = 'EnsphereCore/ensphere-external-assets.json';
+		$gitIgnoreFileSplit[] = 'database/migrations/vendor/*';
+		$gitIgnoreFileSplit[] = 'database/seeds/vendor/*';
+		$gitIgnoreFileSplit[] = 'public/package/**/*';
+		$gitIgnoreFileSplit[] = '!/public/package/' . $moduleData['vendor'] . '/';
+		$gitIgnoreFileSplit[] = '!/public/package/' . $moduleData['vendor'] . '/' . $moduleData['module'] . '/';
+		$gitIgnoreFileSplit[] = '!/public/package/' . $moduleData['vendor'] . '/' . $moduleData['module'] . '/**/*';
 		$gitIgnoreFileSplit[] = '#ensphere-vendor-ignore-end';
 
 		$this->saveGitIgnoreFile( implode( "\n", $gitIgnoreFileSplit ) );
