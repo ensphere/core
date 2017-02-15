@@ -167,6 +167,7 @@ class Registrar
             $command->line( '<fg=yellow;>' . $property->getKey() . '</>' );
             $command->line( "\t<fg=blue;>Default:</> <fg=green;>" . $property->getDefaultValue() . '</>');
             $command->line( "\t<fg=blue;>Description:</> <fg=green;>" . $property->getDescription() . '</>');
+            $command->line( "\t<fg=blue;>Owner:</> <fg=green;>" . $property->getOwner() . '</>');
             $acceptedValues = $property->getAcceptedValues();
             if( ! empty( $acceptedValues ) ) {
                 $command->line( "\t<fg=blue;>Accepted Values:</>" );

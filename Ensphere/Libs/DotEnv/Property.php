@@ -12,6 +12,8 @@ abstract class Property
 
     protected $description = '';
 
+    protected $owner = 'undefined';
+
     protected $acceptedValues = [];
 
     /**
@@ -28,6 +30,11 @@ abstract class Property
     final public function getDefaultValue()
     {
         return $this->defaultValue;
+    }
+
+    final public function getOwner()
+    {
+        return $this->owner;
     }
 
     final public function getDescription()
