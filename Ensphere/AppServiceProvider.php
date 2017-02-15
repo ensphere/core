@@ -1,5 +1,6 @@
 <?php namespace EnsphereCore;
 
+use EnsphereCore\Libs\DotEnv\Stubs\AppUrl;
 use EnsphereCore\Libs\DotEnv\Stubs\FilesystemRoot;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Console\Scheduling\Schedule;
@@ -34,6 +35,7 @@ class AppServiceProvider extends ServiceProvider
 			$schedule->command( 'ensphere:external-assets' )->hourly();
 
 			$app[Registrar::class]->add( new FilesystemRoot );
+            $app[Registrar::class]->add( new AppUrl );
 
 		});
 
