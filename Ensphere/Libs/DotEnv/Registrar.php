@@ -48,7 +48,7 @@ class Registrar
     private function getDotEnvFileLines()
     {
         if( is_null( $this->dotEnvFileLines ) ) {
-            $this->dotEnvFileLines = array_filter( explode( "\n", file_get_contents( base_path( '.env' ) ) ) );
+            $this->dotEnvFileLines = explode( "\n", file_get_contents( base_path( '.env' ) ) );
         }
         return $this->dotEnvFileLines;
     }
@@ -96,6 +96,7 @@ class Registrar
      */
     private function getUndefinedSettings()
     {
+        $customDefined = [];
         $defined = [];
         $toAdd = [];
         $read = false;
@@ -104,16 +105,39 @@ class Registrar
             if( $line === $this->endTag ) $read = false;
             if( $read ) {
                 if( $keyValuePair = $this->getKeyValuePair( $line ) ) {
-                    $defined[] = key( $keyValuePair );
+                    $defined[key( $keyValuePair )] = $keyValuePair[key( $keyValuePair )];
+                }
+            } else {
+                if( $keyValuePair = $this->getKeyValuePair( $line ) ) {
+                    $customDefined[key( $keyValuePair )] = $keyValuePair[key( $keyValuePair )];
                 }
             }
         }
         foreach( $this->properties as $propertyObj ) {
-            if( ! in_array( $propertyObj->getKey(), $defined ) ) {
-                $toAdd[$propertyObj->getKey()] = $propertyObj->getDefaultValue();
+            if( ! isset( $defined[ $propertyObj->getKey() ] ) ) {
+                if( ! isset( $customDefined[ $propertyObj->getKey() ] ) ) {
+                    $toAdd[ $propertyObj->getKey() ] = $propertyObj->getDefaultValue();
+                } else {
+                    $toAdd[ $propertyObj->getKey() ] = $customDefined[ $propertyObj->getKey() ];
+                }
             }
         }
+        $this->removeDuplicates( $toAdd );
         return $toAdd;
+    }
+
+    /**
+     * @param $toAdd
+     */
+    private function removeDuplicates( $toAdd )
+    {
+        foreach( $this->dotEnvFileLines as $key => $line ) {
+            if( $keyValuePair = $this->getKeyValuePair( $line ) ) {
+                if( isset( $toAdd[key( $keyValuePair )] ) ) {
+                    unset( $this->dotEnvFileLines[$key] );
+                }
+            }
+        }
     }
 
     private function saveDotEnvFile()
