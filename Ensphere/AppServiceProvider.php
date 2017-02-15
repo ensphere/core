@@ -14,6 +14,8 @@ use EnsphereCore\Commands\Ensphere\Make\Command as MakeCommand;
 use EnsphereCore\Commands\Ensphere\Database\Command as DatabaseCommand;
 use EnsphereCore\Commands\Ensphere\Modules\Command as ModulesCommand;
 use EnsphereCore\Commands\Ensphere\ExternalAssets\Command as ExternalAssetsCommand;
+use EnsphereCore\Libs\DotEnv\Registrar;
+use EnsphereCore\Libs\DotEnv\Commands\DotEnv;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -24,15 +26,18 @@ class AppServiceProvider extends ServiceProvider
 	 */
 	public function boot()
 	{
+
 		$this->app->booted( function() {
 			$schedule = $this->app->make( Schedule::class );
 			$schedule->command( 'ensphere:external-assets' )->hourly();
 		});
+
 		$this->publishes([
 			__DIR__ . '/../ensphere.assets.json' => base_path( 'EnsphereCore/ensphere-assets.json' ),
 			__DIR__ . '/../ensphere.registration.json' => base_path( 'EnsphereCore/ensphere-registration.json' ),
 			__DIR__ . '/../ensphere.external.assets.json' => base_path( 'EnsphereCore/ensphere-external-assets.json' )
 		], 'config' );
+
 	}
 
 	/**
@@ -42,6 +47,11 @@ class AppServiceProvider extends ServiceProvider
 	 */
 	public function register()
 	{
+
+        $this->app->singleton( Registrar::class, function( $app ){
+            return new Registrar;
+        });
+
 		$this->commands([
 			RenameCommand::class,
 			ExportCommand::class,
@@ -55,6 +65,7 @@ class AppServiceProvider extends ServiceProvider
 			DatabaseCommand::class,
 			ModulesCommand::class,
 			ExternalAssetsCommand::class,
+            DotEnv::class
 		]);
 	}
 }

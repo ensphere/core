@@ -38,7 +38,14 @@ class Command extends IlluminateCommand {
 		$this->publishVendorAssets();
 		$this->combineDependencyAssets();
 		$this->migrateRun();
+		$this->generateDotEnvFile();
 	}
+
+	private function generateDotEnvFile()
+    {
+        $this->info('generating .env file...');
+        $this->info( shell_exec( "php artisan ensphere:dotenv generate" ) );
+    }
 
 	/**
 	 * [migrateRun description]
@@ -66,7 +73,7 @@ class Command extends IlluminateCommand {
 	private function publishVendorAssets()
 	{
 		$this->info('publishing config files...');
-        		//$this->deleteNonModulesVendorAssets();
+        //$this->deleteNonModulesVendorAssets();
 		$this->cleanModulePackageAssetFolders();
 		$this->info( shell_exec( "php artisan vendor:publish --tag=config" ) );
 		$this->info('pushing module assets to application...');
