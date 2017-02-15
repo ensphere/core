@@ -13,4 +13,6 @@ class AppUrl extends Property
 
     protected $description = 'Defines the applications domain/url. This is a required property';
 
+    protected $owner = 'ensphere/core';
+
 }
