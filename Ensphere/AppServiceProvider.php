@@ -1,5 +1,6 @@
 <?php namespace EnsphereCore;
 
+use EnsphereCore\Libs\DotEnv\Stubs\FilesystemRoot;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Console\Scheduling\Schedule;
 use EnsphereCore\Commands\Ensphere\Rename\Command as RenameCommand;
@@ -27,9 +28,13 @@ class AppServiceProvider extends ServiceProvider
 	public function boot()
 	{
 
-		$this->app->booted( function() {
-			$schedule = $this->app->make( Schedule::class );
+		$this->app->booted( function( $app )
+        {
+			$schedule = $app->make( Schedule::class );
 			$schedule->command( 'ensphere:external-assets' )->hourly();
+
+			$app[Registrar::class]->add( new FilesystemRoot );
+
 		});
 
 		$this->publishes([
