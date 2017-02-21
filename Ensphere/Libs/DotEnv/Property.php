@@ -27,7 +27,7 @@ abstract class Property
     /**
      * @return mixed
      */
-    final public function getDefaultValue()
+    public function getDefaultValue()
     {
         return $this->defaultValue;
     }
