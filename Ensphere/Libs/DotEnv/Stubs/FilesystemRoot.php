@@ -13,6 +13,6 @@ class FilesystemRoot extends Property
 
     protected $description = 'Sets the path for the File System. Typically the back end application is the master and the front end is the slave.';
 
-    protected $owner = 'ensphere/core';'root'   => base_path( env( 'FILESYSTEM_ROOT', 'storage/app' ) ),'root'   => base_path( env( 'FILESYSTEM_ROOT', 'storage/app' ) ),
+    protected $owner = 'ensphere/core';
 
 }
