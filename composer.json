@@ -7,7 +7,8 @@
  	"require" : {
  		"matthiasmullie/minify": "1.3.*",
  		"lukesnowden/composer-bower-plugin": "^1.0",
-		"ensphere/module-composer" : "^1.0"
+		"ensphere/module-composer" : "^1.0",
+		"ensphere/container" : "*"
  	},
  	"repositories": [
 	 	{
