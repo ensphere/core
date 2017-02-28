@@ -59,6 +59,8 @@ class Command extends IlluminateCommand {
 	 */
 	protected function checkFoldersExists( $vendorFolder, $moduleFolder )
 	{
+        $path = base_path( 'database/migrations/vendor/' );
+        if( ! file_exists( $path ) ) mkdir( $path, 0777 );
 		$path = base_path( 'database/migrations/vendor/' . $vendorFolder . '/' );
 		if( ! file_exists( $path ) ) mkdir( $path, 0777 );
 		$path = base_path( 'database/migrations/vendor/' . $vendorFolder . '/' . $moduleFolder . '/' );

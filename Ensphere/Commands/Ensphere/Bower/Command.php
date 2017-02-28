@@ -109,6 +109,8 @@ class Command extends IlluminateCommand {
 		$gitIgnoreFileSplit[] = '/bower_components';
 		$gitIgnoreFileSplit[] = '';
 		$gitIgnoreFileSplit[] = '/bower.json';
+        $gitIgnoreFileSplit[] = '/composer.lock';
+        $gitIgnoreFileSplit[] = '/modules.json';
 		$gitIgnoreFileSplit[] = '/public/vendor/**/*';
 		$gitIgnoreFileSplit[] = '/public/javascripts.js';
 		$gitIgnoreFileSplit[] = '/config/packages.json';
