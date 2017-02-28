@@ -17,6 +17,9 @@
 	 	}
  	],
  	"autoload": {
+		"files" : [
+			"Ensphere/helpers.php"
+		],
  		"psr-4": { 
  			"EnsphereCore\\": "Ensphere"
  		}

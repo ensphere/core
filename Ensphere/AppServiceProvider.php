@@ -1,7 +1,11 @@
-<?php namespace EnsphereCore;
+<?php
+
+namespace EnsphereCore;
 
 use EnsphereCore\Libs\DotEnv\Stubs\AppUrl;
 use EnsphereCore\Libs\DotEnv\Stubs\FilesystemRoot;
+use EnsphereCore\Libs\Helpers\Contracts\Blueprints\HelpersBlueprint;
+use EnsphereCore\Libs\Helpers\Contracts\Helpers;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Console\Scheduling\Schedule;
 use EnsphereCore\Commands\Ensphere\Rename\Command as RenameCommand;
@@ -58,6 +62,8 @@ class AppServiceProvider extends ServiceProvider
         $this->app->singleton( Registrar::class, function( $app ){
             return new Registrar;
         });
+
+        $this->app->singleton( HelpersBlueprint::class, Helpers::class );
 
 		$this->commands([
 			RenameCommand::class,
