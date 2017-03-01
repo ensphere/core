@@ -4,6 +4,8 @@ namespace EnsphereCore;
 
 use EnsphereCore\Libs\DotEnv\Stubs\AppUrl;
 use EnsphereCore\Libs\DotEnv\Stubs\FilesystemRoot;
+use EnsphereCore\Libs\Exceptions\Bucket;
+use EnsphereCore\Libs\Exceptions\Coverage\CSRFTokenMismatch;
 use EnsphereCore\Libs\Helpers\Contracts\Blueprints\HelpersBlueprint;
 use EnsphereCore\Libs\Helpers\Contracts\Helpers;
 use Illuminate\Support\ServiceProvider;
@@ -40,6 +42,7 @@ class AppServiceProvider extends ServiceProvider
 
 			$app[Registrar::class]->add( new FilesystemRoot );
             $app[Registrar::class]->add( new AppUrl );
+            $app['ensphere.exception.handler']->addHandler( new CSRFTokenMismatch() );
 
 		});
 
@@ -64,6 +67,10 @@ class AppServiceProvider extends ServiceProvider
         });
 
         $this->app->singleton( HelpersBlueprint::class, Helpers::class );
+
+        $this->app->singleton( 'ensphere.exception.handler', function( $app ) {
+            return new Bucket();
+        });
 
 		$this->commands([
 			RenameCommand::class,
