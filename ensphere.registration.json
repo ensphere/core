@@ -18,6 +18,7 @@
 
     },
 	"contracts" : {
-
+		"Ensphere\\Ensphere\\Contracts\\Blueprints\\RoutesBlueprint" : "Ensphere\\Ensphere\\Contracts\\Routes",
+		"Ensphere\\Ensphere\\Contracts\\Blueprints\\HelpersBlueprint" : "Ensphere\\Ensphere\\Contracts\\Helpers"
 	}
 }
