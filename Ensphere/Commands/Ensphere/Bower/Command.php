@@ -248,14 +248,14 @@ class Command extends IlluminateCommand {
 	public static function assetLoaderTemplateLocal( $jsFiles, $cssFiles ) {
 		$return = '';
 		foreach( $cssFiles as $file ) {
-		    if( ! preg_match( '/^(http)|(\/\/)/s', $file ) && ! file_exists( public_path( ltrim( $path, '/' ) ) ) ) {
+		    if( ! preg_match( '/^(http)|(\/\/)/s', $file ) && ! file_exists( public_path( ltrim( $file, '/' ) ) ) ) {
                 $return .= "<!-- NOT FOUND <link defer href='{$file}' rel='stylesheet' type='text/css'>-->\n\r";
             } else {
                 $return .= "<link href='{$file}' rel='stylesheet' type='text/css'>\n\r";
             }
 		}
 		foreach( $jsFiles as $file ) {
-            if( ! preg_match( '/^(http)|(\/\/)/s', $file ) && ! file_exists( public_path( ltrim( $path, '/' ) ) ) ) {
+            if( ! preg_match( '/^(http)|(\/\/)/s', $file ) && ! file_exists( public_path( ltrim( $file, '/' ) ) ) ) {
                 $return .= "<!-- NOT FOUND <script src='{$file}'></script>-->\n\r";
             } else {
                 $return .= "<script src='{$file}'></script>\n\r";
