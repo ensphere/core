@@ -19,3 +19,20 @@ function public_img( $basename = '' )
 {
     return app()->make( HelpersBlueprint::class )->publicImg( $basename );
 }
+
+/**
+ * @return mixed
+ */
+function display_success_message()
+{
+    return app()->make( HelpersBlueprint::class )->displaySuccessMessage();
+}
+
+/**
+ * @param $errors
+ * @return mixed
+ */
+function display_error_messages( $errors )
+{
+    return app()->make( HelpersBlueprint::class )->displayErrorMessages( $errors );
+}

@@ -39,4 +39,38 @@ class Helpers implements HelpersBlueprint
         return public_url( "images/{$basename}" );
     }
 
+    public function displaySuccessMessage()
+    {
+        $message = session('success');
+        if( $message ) {
+            echo '
+            <div class="ui success message">
+                <div class="header">Success!</div>
+                <p>' . $message . '</p>
+            </div>';
+        }
+    }
+
+    /**
+     * @param $errors
+     */
+    public function displayErrorMessages( $errors )
+    {
+
+        if( ! $errors->isEmpty() ) {
+            echo '
+            <div class="ui error message">
+                <div class="header">
+                    There was some errors with your submission
+                </div>
+                <ul class="list">';
+                    foreach( $errors->all() as $error ) {
+                        echo "<li>{$error}</li>";
+                    }
+                    echo '
+                </ul>
+            </div>';
+        }
+    }
+
 }
