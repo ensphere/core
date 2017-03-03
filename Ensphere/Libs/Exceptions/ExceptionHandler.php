@@ -12,6 +12,7 @@ use Illuminate\Http\Exception\HttpResponseException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Illuminate\Foundation\Exceptions\Handler as IlluminateExceptionHandler;
+use Illuminate\Foundation\Validation\ValidationException;
 
 class ExceptionHandler extends IlluminateExceptionHandler
 {
@@ -25,7 +26,8 @@ class ExceptionHandler extends IlluminateExceptionHandler
         AuthorizationException::class,
         HttpException::class,
         ModelNotFoundException::class,
-        HttpResponseException::class
+        HttpResponseException::class,
+        ValidationException::class
     ];
 
     protected $bucket = [];
