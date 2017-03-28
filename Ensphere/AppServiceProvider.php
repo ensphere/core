@@ -22,6 +22,7 @@ use EnsphereCore\Commands\Ensphere\Make\Command as MakeCommand;
 use EnsphereCore\Commands\Ensphere\Database\Command as DatabaseCommand;
 use EnsphereCore\Commands\Ensphere\Modules\Command as ModulesCommand;
 use EnsphereCore\Commands\Ensphere\ExternalAssets\Command as ExternalAssetsCommand;
+use EnsphereCore\Commands\Ensphere\Extend\Command as ExtendCommand;
 use EnsphereCore\Libs\DotEnv\Registrar;
 use EnsphereCore\Libs\DotEnv\Commands\DotEnv;
 
@@ -85,7 +86,8 @@ class AppServiceProvider extends ServiceProvider
 			DatabaseCommand::class,
 			ModulesCommand::class,
 			ExternalAssetsCommand::class,
-            DotEnv::class
+            DotEnv::class,
+            ExtendCommand::class
 		]);
 	}
 }
