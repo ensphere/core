@@ -36,3 +36,12 @@ function display_error_messages( $errors )
 {
     return app()->make( HelpersBlueprint::class )->displayErrorMessages( $errors );
 }
+
+/**
+ * @param $model
+ * @return mixed
+ */
+function base_model_name( $model )
+{
+    return app()->make( HelpersBlueprint::class )->baseModelName( $model );
+}

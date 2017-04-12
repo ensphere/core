@@ -3,8 +3,10 @@
 namespace EnsphereCore\Libs\Helpers\Contracts;
 
 use EnsphereCore\Libs\Helpers\Contracts\Blueprints\HelpersBlueprint;
-
 use EnsphereCore\Commands\Ensphere\Traits\Module;
+use Illuminate\Database\Eloquent\Model;
+use Purposemedia\FrontContainer\Models\Tracker;
+use ReflectionClass;
 
 class Helpers implements HelpersBlueprint
 {
@@ -71,6 +73,24 @@ class Helpers implements HelpersBlueprint
                 </ul>
             </div>';
         }
+    }
+
+    /**
+     * @param $model
+     * @return string
+     */
+    public function baseModelName( $model )
+    {
+        /** ALL front end models should extend the Tracker model and the admin should be the Eloquent model */
+        $baseModels = [ Tracker::class, Model::class ];
+        $modelName = get_class( $model );
+        $reflection = new ReflectionClass( $model );
+        if( $parent = $reflection->getParentClass() ) {
+            $parentName = $parent->getName();
+            if( in_array( $parentName, $baseModels ) ) return $modelName;
+            return $this->baseModelName( ( new $parentName ) );
+        }
+        return $modelName;
     }
 
 }
