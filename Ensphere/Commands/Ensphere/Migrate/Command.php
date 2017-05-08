@@ -87,8 +87,7 @@ class Command extends IlluminateCommand {
 	 * @return [type] [description]
 	 */
 	public function runMigration() {
-		$this->line( 'running application migration' );
-		Artisan::call( 'migrate', [ '--force' => true ] );
+
 		$this->line( 'running vendor migration' );
 		$folder = base_path( 'database/migrations/vendor/' );
 		foreach( new DirectoryIterator( $folder ) as $vendorInfo ) {
@@ -111,6 +110,8 @@ class Command extends IlluminateCommand {
 			}
 		}
 		$this->seed();
+        $this->line( 'running application migration' );
+        Artisan::call( 'migrate', [ '--force' => true ] );
 	}
 
 	/**
