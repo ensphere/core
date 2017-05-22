@@ -214,6 +214,7 @@ class Command extends IlluminateCommand {
 	 * @return [type]           [description]
 	 */
 	public static function assetLoaderTemplate( $jsFiles, $cssFiles ) {
+
 		$return = "
 		<script type='text/javascript'>
 		var styles = [ '" . implode( "','", $cssFiles ) . "'];
@@ -422,7 +423,10 @@ class Command extends IlluminateCommand {
 			] );
 			$js =  ['/javascripts.js?ver=' . $newVersion];
 			$css = ['/stylesheets.css?ver=' . $newVersion];
-			file_put_contents( $this->writePath . 'loader.blade.php', self::assetLoaderTemplate( $js, $css ) );
+
+			// @todo: Not working correctly need to come back to this
+			//file_put_contents( $this->writePath . 'loader.blade.php', self::assetLoaderTemplate( $js, $css ) );
+            file_put_contents( $this->writePath . 'loader.blade.php', self::assetLoaderTemplateLocal( $js, $css ) );
 		}
 	}
 
