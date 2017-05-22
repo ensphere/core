@@ -246,17 +246,17 @@ class Command extends IlluminateCommand {
 	 * @param  [type] $cssFiles [description]
 	 * @return [type]           [description]
 	 */
-	public static function assetLoaderTemplateLocal( $jsFiles, $cssFiles ) {
+	public static function assetLoaderTemplateLocal( $jsFiles, $cssFiles, $check = true ) {
 		$return = '';
 		foreach( $cssFiles as $file ) {
-		    if( ! preg_match( '/^(http)|(\/\/)/s', $file ) && ! file_exists( public_path( ltrim( $file, '/' ) ) ) ) {
+		    if( $check && ! preg_match( '/^(http)|(\/\/)/s', $file ) && ! file_exists( public_path( ltrim( $file, '/' ) ) ) ) {
                 $return .= "<!-- NOT FOUND <link defer href='{$file}' rel='stylesheet' type='text/css'>-->\n\r";
             } else {
                 $return .= "<link href='{$file}' rel='stylesheet' type='text/css'>\n\r";
             }
 		}
 		foreach( $jsFiles as $file ) {
-            if( ! preg_match( '/^(http)|(\/\/)/s', $file ) && ! file_exists( public_path( ltrim( $file, '/' ) ) ) ) {
+            if( $check && ! preg_match( '/^(http)|(\/\/)/s', $file ) && ! file_exists( public_path( ltrim( $file, '/' ) ) ) ) {
                 $return .= "<!-- NOT FOUND <script src='{$file}'></script>-->\n\r";
             } else {
                 $return .= "<script src='{$file}'></script>\n\r";
@@ -426,7 +426,7 @@ class Command extends IlluminateCommand {
 
 			// @todo: Not working correctly need to come back to this
 			//file_put_contents( $this->writePath . 'loader.blade.php', self::assetLoaderTemplate( $js, $css ) );
-            file_put_contents( $this->writePath . 'loader.blade.php', self::assetLoaderTemplateLocal( $js, $css ) );
+            file_put_contents( $this->writePath . 'loader.blade.php', self::assetLoaderTemplateLocal( $js, $css, false ) );
 		}
 	}
 
