@@ -404,8 +404,10 @@ class Command extends IlluminateCommand {
             $js = array_merge( $this->getJavascriptFiles(), $this->getModuleJsFiles() );
             $css = array_merge( $this->getStyleFiles(), $this->getModuleCssFiles() );
 
-            file_put_contents( $this->writePath . 'css-loader.blade.php', self::assetLoaderTemplateLocal( $js, $css )['css'] );
-            file_put_contents( $this->writePath . 'js-loader.blade.php', self::assetLoaderTemplateLocal( $js, $css )['js'] );
+            $assets = self::assetLoaderTemplateLocal( $js, $css );
+
+            file_put_contents( $this->writePath . 'css-loader.blade.php', $assets['css'] );
+            file_put_contents( $this->writePath . 'js-loader.blade.php', $assets['js'] );
             file_put_contents( $this->writePath . 'loader.blade.php', "@include('css-loader')\n@include('js-loader')" );
         } else {
             $newVersion = $this->getNewVersion();
@@ -418,8 +420,9 @@ class Command extends IlluminateCommand {
 
             // @todo: Not working correctly need to come back to this
             //file_put_contents( $this->writePath . 'loader.blade.php', self::assetLoaderTemplate( $js, $css ) );
-            file_put_contents( $this->writePath . 'css-loader.blade.php', self::assetLoaderTemplateLocal( $js, $css )['css'] );
-            file_put_contents( $this->writePath . 'js-loader.blade.php', self::assetLoaderTemplateLocal( $js, $css )['js'] );
+            $assets = self::assetLoaderTemplateLocal( $js, $css, false );
+            file_put_contents( $this->writePath . 'css-loader.blade.php', $assets['css'] );
+            file_put_contents( $this->writePath . 'js-loader.blade.php', $assets['js'] );
             file_put_contents( $this->writePath . 'loader.blade.php', "@include('css-loader')\n@include('js-loader')" );
         }
     }
