@@ -70,7 +70,7 @@ class RouteExtender
         $routes = $this->router->getRoutes();
         foreach( $routes->get() as $route ) {
             if( ! is_null( $routeName = $route->getName() ) ) {
-                if( preg_match( "#^" . str_replace( '*', '.?', $name ) . "#is", $routeName ) ) {
+                if( preg_match( "#^" . str_replace( [ '\*', '*' ], [ '*', '.?' ], preg_quote( $name, '#' ) ) . "#is", $routeName ) ) {
                     $_routes[] = $route;
                 }
             }
