@@ -54,6 +54,21 @@ class RouteExtender
      */
     public function setPrefixForAllMatching( $name, $prefix )
     {
+        if( is_array( $name ) ) {
+            foreach( $name as $_name ) {
+                $this->_setPrefixForAllMatching( $_name, $prefix );
+            }
+        } else {
+            $this->_setPrefixForAllMatching( $name, $prefix );
+        }
+    }
+
+    /**
+     * @param $name
+     * @param $prefix
+     */
+    public function _setPrefixForAllMatching( $name, $prefix )
+    {
         $routes = $this->getAllRoutesMatching( $name );
         foreach( $routes as $route ) {
             $this->setPrefix( $route->getName(), $prefix );
