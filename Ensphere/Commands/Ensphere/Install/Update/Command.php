@@ -39,8 +39,20 @@ class Command extends IlluminateCommand {
 		$this->combineDependencyAssets();
 		$this->migrateRun();
 		$this->generateDotEnvFile();
+		$this->sendCentralHubNotification();
 	}
 
+    /**
+     * 
+     */
+	private function sendCentralHubNotification()
+    {
+        $this->info( shell_exec( "php artisan inform:hub" ) );
+    }
+
+    /**
+     *
+     */
 	private function generateDotEnvFile()
     {
         $this->info('generating .env file...');
