@@ -2,6 +2,7 @@
 
 namespace EnsphereCore;
 
+use EnsphereCore\Commands\Ensphere\InformCentralHub;
 use EnsphereCore\Libs\DotEnv\Stubs\AppUrl;
 use EnsphereCore\Libs\DotEnv\Stubs\FilesystemRoot;
 use EnsphereCore\Libs\Exceptions\Bucket;
@@ -87,7 +88,8 @@ class AppServiceProvider extends ServiceProvider
 			ModulesCommand::class,
 			ExternalAssetsCommand::class,
             DotEnv::class,
-            ExtendCommand::class
+            ExtendCommand::class,
+            InformCentralHub::class
 		]);
 	}
 }
