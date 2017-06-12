@@ -58,7 +58,7 @@ class InformCentralHub extends Command
             $this->lock_file = base_path( 'composer.lock' );
             $data = [
                 'domain' => config( 'app.url' ),
-                'server' => gethostbyname( php_uname( 'n' ) ),
+                'server' => gethostbyname( config( 'app.url' ) ),
                 'installed' => $this->getCurrentVersions()
             ];
             $encrypter = new Encrypter( base64_decode( substr( $this->encryptionKey, 7 ) ), config( 'app.cipher' ) );

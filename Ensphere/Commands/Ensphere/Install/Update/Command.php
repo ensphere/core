@@ -43,7 +43,7 @@ class Command extends IlluminateCommand {
 	}
 
     /**
-     * 
+     *
      */
 	private function sendCentralHubNotification()
     {
