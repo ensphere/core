@@ -339,6 +339,7 @@ class Command extends IlluminateCommand {
     /**
      * @param $assetGroups
      * @param bool $minify
+     * @return array
      */
     protected function buildCombinedAssets( $assetGroups, $minify = true )
     {
@@ -369,12 +370,30 @@ class Command extends IlluminateCommand {
                 file_put_contents( public_path( $saveAs ), $data );
 
             } else {
-                if( $minify ) {
-                    //$minifier = new \MatthiasMullie\Minify\CSS;
-                    //$minifier->add( $data );
-                    //$data = $minifier->minify();
+
+                $maxNumberOfSelectors = 2000;
+                $numberOfSelectors = substr_count( $data, '}' );
+                $files = ceil( $numberOfSelectors / $maxNumberOfSelectors );
+
+                if( $files > 1 ) {
+                    $newFileNames = [];
+                    if( $minify ) {
+                        $minifier = new \MatthiasMullie\Minify\CSS;
+                        $minifier->add( $data );
+                        $data = $minifier->minify();
+                    }
+                    $split = explode( '}', $data );
+                    $fileChunks = array_chunk( $split, $maxNumberOfSelectors );
+                    foreach( $fileChunks as $key => $fileChunk ) {
+                        $fileData = implode( "}\n", $fileChunk ) . '}';
+                        $filename = "stylesheet-" . ($key+1) . ".css";
+                        file_put_contents( public_path( $filename ), $fileData );
+                        $newFileNames[] = '/' . $filename;
+                    }
+                    return $newFileNames;
+                } else {
+                    file_put_contents( public_path( $saveAs ), $data );
                 }
-                file_put_contents( public_path( $saveAs ), $data );
             }
         }
     }
@@ -411,12 +430,17 @@ class Command extends IlluminateCommand {
             file_put_contents( $this->writePath . 'loader.blade.php', "@include('css-loader')\n@include('js-loader')" );
         } else {
             $newVersion = $this->getNewVersion();
-            $this->buildCombinedAssets([
+            $newStylesheets = $this->buildCombinedAssets([
                 'javascripts.js' 	=>  array_merge( $this->getJavascriptFiles(), $this->getModuleJsFiles() ),
                 'stylesheets.css' 	=> array_merge( $this->getStyleFiles(), $this->getModuleCssFiles() )
             ] );
             $js =  ['/javascripts.js?ver=' . $newVersion];
-            $css = ['/stylesheets.css?ver=' . $newVersion];
+
+            if( is_null( $newStylesheets ) ) {
+                $css = [ '/stylesheets.css?ver=' . $newVersion ];
+            } else {
+                $css = $newStylesheets;
+            }
 
             // @todo: Not working correctly need to come back to this
             //file_put_contents( $this->writePath . 'loader.blade.php', self::assetLoaderTemplate( $js, $css ) );
