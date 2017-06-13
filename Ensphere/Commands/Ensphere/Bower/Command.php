@@ -385,7 +385,7 @@ class Command extends IlluminateCommand {
                     $split = explode( '}', $data );
                     $fileChunks = array_chunk( $split, $maxNumberOfSelectors );
                     foreach( $fileChunks as $key => $fileChunk ) {
-                        $fileData = implode( "}\n", $fileChunk ) . '}';
+                        $fileData = implode( "}", $fileChunk ) . '}';
                         $filename = "stylesheet-" . ($key+1) . ".css";
                         file_put_contents( public_path( $filename ), $fileData );
                         $newFileNames[] = '/' . $filename;
@@ -439,7 +439,9 @@ class Command extends IlluminateCommand {
             if( is_null( $newStylesheets ) ) {
                 $css = [ '/stylesheets.css?ver=' . $newVersion ];
             } else {
-                $css = $newStylesheets;
+                $css = array_map( function( $filename ) use ( $newVersion ) {
+                    return $filename . "?ver={$newVersion}";
+                }, $newStylesheets );
             }
 
             // @todo: Not working correctly need to come back to this
