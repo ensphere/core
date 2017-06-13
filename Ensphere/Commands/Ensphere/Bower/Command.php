@@ -357,7 +357,7 @@ class Command extends IlluminateCommand {
                                 $_data = preg_replace( "#\(['\"']?" . preg_quote( $assetPath, "#" ) . "['\"']?\)#", "('" . $newFilePath . "')", $_data, 1 );
                             }
                         }
-                        $data .= $_data;
+                        $data .= $_data . '|--FILE--|';
                     } else {
                         if( $saveAs === 'javascripts.js' ) {
                             $data .= "try { \n;(function(){\n" . $_data . "\n})();\n } catch(e) { console.log('[" . $asset . "]: ' + e.message );}\n";
@@ -371,29 +371,52 @@ class Command extends IlluminateCommand {
 
             } else {
 
-                $maxNumberOfSelectors = 2000;
-                $numberOfSelectors = substr_count( $data, '}' );
-                $files = ceil( $numberOfSelectors / $maxNumberOfSelectors );
+                $newFileNames = [];
+                $dataByFileSize = [];
+                $combined = [];
+                $combine = [];
+                $size = 0;
+                $maxSize = 220;
+                $fileSplit = explode( '|--FILE--|', $data );
 
-                if( $files > 1 ) {
-                    $newFileNames = [];
-                    if( $minify ) {
-                        $minifier = new \MatthiasMullie\Minify\CSS;
-                        $minifier->add( $data );
-                        $data = $minifier->minify();
-                    }
-                    $split = explode( '}', $data );
-                    $fileChunks = array_chunk( $split, $maxNumberOfSelectors );
-                    foreach( $fileChunks as $key => $fileChunk ) {
-                        $fileData = implode( "}", $fileChunk ) . '}';
-                        $filename = "stylesheet-" . ($key+1) . ".css";
-                        file_put_contents( public_path( $filename ), $fileData );
-                        $newFileNames[] = '/' . $filename;
-                    }
-                    return $newFileNames;
-                } else {
-                    file_put_contents( public_path( $saveAs ), $data );
+                foreach( $fileSplit as $order => $partial ) {
+                    $dataByFileSize[] = [
+                        'original_order' => $order,
+                        'size' => mb_strlen( $partial, '8bit' ) / 1024,
+                        'content' => $partial
+                    ];
                 }
+                usort( $dataByFileSize, function( $a, $b ) {
+                    return $a[ 'size' ] <=> $b[ 'size' ];
+                });
+                foreach( $dataByFileSize as $block ) {
+                    if( $block[ 'size' ] >= $maxSize ) {
+                        $combined[] = [ $block ];
+                    } elseif( $block[ 'size' ] + $size >= $maxSize ) {
+                        $combined[] = $combine;
+                        $combine = [ $block ];
+                        $size = 0;
+                    } else {
+                        $size += $block['size'];
+                        $combine[] = $block;
+                    }
+                }
+                if( ! empty( $combine ) ) {
+                    $combined[] = $combine;
+                }
+                foreach( $combined as $key => $cluster ) {
+                    usort( $cluster, function( $a, $b ) {
+                        return $a[ 'original_order' ] <=> $b[ 'original_order' ];
+                    });
+                    $contents = '';
+                    foreach( $cluster as $fileBlock ) {
+                        $contents .= $fileBlock[ 'content' ];
+                    }
+                    $filename = "stylesheet-" . ($key+1) . ".css";
+                    file_put_contents( public_path( $filename ), $contents );
+                    $newFileNames[] = '/' . $filename;
+                }
+                return $newFileNames;
             }
         }
     }
@@ -435,7 +458,6 @@ class Command extends IlluminateCommand {
                 'stylesheets.css' 	=> array_merge( $this->getStyleFiles(), $this->getModuleCssFiles() )
             ] );
             $js =  ['/javascripts.js?ver=' . $newVersion];
-
             if( is_null( $newStylesheets ) ) {
                 $css = [ '/stylesheets.css?ver=' . $newVersion ];
             } else {
