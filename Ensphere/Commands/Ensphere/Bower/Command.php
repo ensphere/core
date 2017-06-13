@@ -370,9 +370,9 @@ class Command extends IlluminateCommand {
 
             } else {
                 if( $minify ) {
-                    $minifier = new \MatthiasMullie\Minify\CSS;
-                    $minifier->add( $data );
-                    $data = $minifier->minify();
+                    //$minifier = new \MatthiasMullie\Minify\CSS;
+                    //$minifier->add( $data );
+                    //$data = $minifier->minify();
                 }
                 file_put_contents( public_path( $saveAs ), $data );
             }
