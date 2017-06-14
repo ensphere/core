@@ -110,7 +110,7 @@ class Command extends IlluminateCommand {
         $gitIgnoreFileSplit[] = '/public/vendor/**/*';
         $gitIgnoreFileSplit[] = '/public/javascripts.js';
         $gitIgnoreFileSplit[] = '/config/packages.json';
-        $gitIgnoreFileSplit[] = '/public/stylesheets.css';
+        $gitIgnoreFileSplit[] = '/public/stylesheet*';
         $gitIgnoreFileSplit[] = '/resources/views/loader.blade.php';
         $gitIgnoreFileSplit[] = '/resources/views/css-loader.blade.php';
         $gitIgnoreFileSplit[] = '/resources/views/js-loader.blade.php';
