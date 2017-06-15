@@ -386,9 +386,6 @@ class Command extends IlluminateCommand {
                         'content' => $partial
                     ];
                 }
-                usort( $dataByFileSize, function( $a, $b ) {
-                    return $a[ 'size' ] <=> $b[ 'size' ];
-                });
                 foreach( $dataByFileSize as $block ) {
                     if( $block[ 'size' ] >= $maxSize ) {
                         $combined[] = [ $block ];
@@ -405,9 +402,6 @@ class Command extends IlluminateCommand {
                     $combined[] = $combine;
                 }
                 foreach( $combined as $key => $cluster ) {
-                    usort( $cluster, function( $a, $b ) {
-                        return $a[ 'original_order' ] <=> $b[ 'original_order' ];
-                    });
                     $contents = '';
                     foreach( $cluster as $fileBlock ) {
                         $contents .= $fileBlock[ 'content' ];
