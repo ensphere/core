@@ -37,12 +37,12 @@ class Command extends IlluminateCommand {
 	{
 		if( ! $this->hasBeenInstalled() ) {
 			//$this->installNodeModules();
-			$this->installBowerComponents();
-			$this->generateRegistrationFile();
-			$this->publishVendorAssets();
-			$this->combineVendorAssets();
+			//$this->installBowerComponents();
+			//$this->generateRegistrationFile();
+			//$this->publishVendorAssets();
+			//$this->combineVendorAssets();
 			//$this->runGulp();
-			$this->defineAsinstalled();
+			//$this->defineAsinstalled();
 		} else {
 			$this->error( "application has already ran the install process --canceled" );
 		}

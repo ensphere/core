@@ -1,4 +1,6 @@
-<?php namespace EnsphereCore\Commands\Ensphere\Install\Update;
+<?php
+
+namespace EnsphereCore\Commands\Ensphere\Install\Update;
 
 use EnsphereCore\Commands\Ensphere\Traits\Module as ModuleTrait;
 use Illuminate\Console\Command as IlluminateCommand;
@@ -6,32 +8,25 @@ use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 use Storage, File;
 
-class Command extends IlluminateCommand {
+class Command extends IlluminateCommand
+{
 
 	use ModuleTrait;
 
-	/**
-	 * [$name description]
-	 * @var string
-	 */
+    /**
+     * @var string
+     */
 	protected $name = 'ensphere:update';
 
-	/**
-	 * [$description description]
-	 * @var string
-	 */
+    /**
+     * @var string
+     */
 	protected $description = 'Update vendor and application dependencies.';
 
-	/**
-	 * [$currentStructure description]
-	 * @var [type]
-	 */
-	private $currentStructure;
 
-	/**
-	 * [fire description]
-	 * @return [type] [description]
-	 */
+    /**
+     * Run the command
+     */
 	public function fire()
 	{
 		$this->generateRegistrationFile();
@@ -43,7 +38,7 @@ class Command extends IlluminateCommand {
 	}
 
     /**
-     *
+     * @return void
      */
 	private function sendCentralHubNotification()
     {

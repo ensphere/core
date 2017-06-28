@@ -104,7 +104,7 @@ class Command extends IlluminateCommand {
 							));
 						}
 					} catch ( QueryException $e) {
-					
+                        $this->error( 'ERROR: ' . $e->getMessage() );
 					}
 				}
 			}
