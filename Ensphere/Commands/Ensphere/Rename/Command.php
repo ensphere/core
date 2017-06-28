@@ -1,4 +1,6 @@
-<?php namespace EnsphereCore\Commands\Ensphere\Rename;
+<?php
+
+namespace EnsphereCore\Commands\Ensphere\Rename;
 
 use EnsphereCore\Commands\Ensphere\Traits\Module as ModuleTrait;
 use Illuminate\Console\Command as IlluminateCommand;
@@ -6,6 +8,7 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputArgument;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
+use Exception;
 
 class Command extends IlluminateCommand {
 
@@ -146,14 +149,14 @@ class Command extends IlluminateCommand {
 	 */
 	private function moduleRename()
 	{
-		$this->renamePublicFolders();
-		$this->renameDatabaseFolders();
-		$this->updateRegistrationFile();
-		$this->updateReferences();
-		$this->updateGulpFile();
-		$this->updateComposerFile();
-		$this->updatePackagesFile();
-		$this->updateDotGitIgnoreFile();
+	    try { $this->renamePublicFolders(); } catch( Exception $e ) { $this->info( $e->getMessage() ); }
+        try { $this->renameDatabaseFolders(); } catch( Exception $e ) { $this->info( $e->getMessage() ); }
+        try { $this->updateRegistrationFile(); } catch( Exception $e ) { $this->info( $e->getMessage() ); }
+        try { $this->updateReferences(); } catch( Exception $e ) { $this->info( $e->getMessage() ); }
+        try { $this->updateGulpFile(); } catch( Exception $e ) { $this->info( $e->getMessage() ); }
+        try { $this->updateComposerFile(); } catch( Exception $e ) { $this->info( $e->getMessage() ); }
+        try { $this->updatePackagesFile(); } catch( Exception $e ) { $this->info( $e->getMessage() ); }
+        try { $this->updateDotGitIgnoreFile(); } catch( Exception $e ) { $this->info( $e->getMessage() ); }
 	}
 
 	/**
