@@ -179,6 +179,7 @@ class Command extends IlluminateCommand {
 		$files = $this->findAllFiles( app_path() );
 		foreach( $files as $file ) {
 			$contents = preg_replace( "/([\/']){$this->currentVendor}([\/\.]){$this->currentModule}([\/']|(?:::))/", "$1{$this->vendor}$2{$this->module}$3", file_get_contents( $file ) );
+			$contents = preg_replace( "/(['\"]){$this->currentVendor}\\\\{$this->currentModule}\\\\/", "$1{$this->vendor}\\\\{$this->module}\\\\", $contents );
 			file_put_contents( $file, $contents );
 		}
 		// Resource views
