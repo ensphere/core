@@ -35,6 +35,7 @@ class Command extends IlluminateCommand {
 	 */
 	public function fire()
 	{
+        putenv( 'ENSPHERE_IMPORT=true' );
 		$this->currentStructure = $this->getCurrentVendorAndModuleName();
 		$this->importMigrations();
 		$this->importSeeds();
@@ -98,6 +99,12 @@ class Command extends IlluminateCommand {
 	private function moveFilesToDatabaseMigrations( $folder )
 	{
 		$moved = array();
+        if( ! file_exists( base_path( 'database/migrations/vendor/' . $this->currentStructure['vendor'] ) ) ) {
+            mkdir( base_path( 'database/migrations/vendor/' . $this->currentStructure['vendor'] ), 0777 );
+        }
+        if( ! file_exists( base_path( 'database/migrations/vendor/' . $this->currentStructure['vendor'] . '/' . $this->currentStructure['module'] ) ) ) {
+            mkdir( base_path( 'database/migrations/vendor/' . $this->currentStructure['vendor'] . '/' . $this->currentStructure['module'] ), 0777 );
+        }
 		foreach( new RecursiveIteratorIterator( new RecursiveDirectoryIterator( $folder ) ) as $file ) {
 			if( $file->getExtension() === 'php' ) {
 				copy( $folder . $file->getBasename(), base_path( 'database/migrations/vendor/' . $this->currentStructure['vendor'] . '/' . $this->currentStructure['module'] . '/' . $file->getBasename() ) );

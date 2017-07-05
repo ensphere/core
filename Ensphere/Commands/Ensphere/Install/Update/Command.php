@@ -94,6 +94,10 @@ class Command extends IlluminateCommand
      */
     protected function cleanVendorMigrationsFolders()
     {
+        if( env( 'ENSPHERE_IMPORT', false ) ) {
+            $this->info( 'vendor migration clean skipped...' );
+            return;
+        }
         $di = new \RecursiveDirectoryIterator( base_path( 'database/migrations/vendor/' ), \FilesystemIterator::SKIP_DOTS );
         $ri = new \RecursiveIteratorIterator( $di, \RecursiveIteratorIterator::CHILD_FIRST );
         foreach ( $ri as $file ) {
