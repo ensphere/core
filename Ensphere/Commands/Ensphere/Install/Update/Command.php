@@ -90,7 +90,6 @@ class Command extends IlluminateCommand
     /**
      * Deletes all the vendor files and folders from `database/migrations/vendor`
      *
-     * @return void
      */
     protected function cleanVendorMigrationsFolders()
     {
@@ -98,6 +97,12 @@ class Command extends IlluminateCommand
             $this->info( 'vendor migration clean skipped...' );
             return;
         }
+
+        if( ! file_exists( base_path( 'database/migrations/vendor/' ) ) ) {
+            $this->info( base_path( 'database/migrations/vendor/' ) . ' doesn\'t exist...' );
+            return;
+        }
+
         $di = new \RecursiveDirectoryIterator( base_path( 'database/migrations/vendor/' ), \FilesystemIterator::SKIP_DOTS );
         $ri = new \RecursiveIteratorIterator( $di, \RecursiveIteratorIterator::CHILD_FIRST );
         foreach ( $ri as $file ) {
