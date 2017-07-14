@@ -26,6 +26,7 @@ use EnsphereCore\Commands\Ensphere\ExternalAssets\Command as ExternalAssetsComma
 use EnsphereCore\Commands\Ensphere\Extend\Command as ExtendCommand;
 use EnsphereCore\Libs\DotEnv\Registrar;
 use EnsphereCore\Libs\DotEnv\Commands\DotEnv;
+use EnsphereCore\Libs\Extending\Illuminate\Routing\UrlGenerator;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -36,6 +37,7 @@ class AppServiceProvider extends ServiceProvider
 	 */
 	public function boot()
 	{
+        $this->extendIlluminateRouting();
 
 		$this->app->booted( function( $app )
         {
@@ -92,4 +94,44 @@ class AppServiceProvider extends ServiceProvider
             InformCentralHub::class
 		]);
 	}
+
+    /**
+     * @return void
+     */
+    protected function extendIlluminateRouting()
+    {
+        $this->app[ 'url' ] = $this->app->share( function($app)
+        {
+            $routes = $app[ 'router' ]->getRoutes();
+            $app->instance('routes', $routes);
+
+            $url = new UrlGenerator(
+                $routes, $app->rebinding(
+                    'request', $this->requestRebinder()
+                )
+            );
+
+            $url->setSessionResolver( function() {
+                return $this->app[ 'session' ];
+            });
+
+            $app->rebinding( 'routes', function( $app, $routes )
+            {
+                $app[ 'url' ]->setRoutes( $routes );
+            });
+
+            return $url;
+        });
+    }
+
+    /**
+     * @return \Closure
+     */
+    protected function requestRebinder()
+    {
+        return function ( $app, $request ) {
+            $app[ 'url' ]->setRequest( $request );
+        };
+    }
+
 }
