@@ -337,6 +337,37 @@ class Command extends IlluminateCommand {
     }
 
     /**
+     * @param $css
+     * @return string
+     */
+    protected function CSSStripWhitespace($css)
+    {
+        $replace = array(
+            "#/\*.*?\*/#s" => "",  // Strip C style comments.
+            "#\s\s+#"      => " ", // Strip excess whitespace.
+        );
+        $search = array_keys($replace);
+        $css = preg_replace($search, $replace, $css);
+
+        $replace = array(
+            ": "  => ":",
+            "; "  => ";",
+            " {"  => "{",
+            " }"  => "}",
+            ", "  => ",",
+            "{ "  => "{",
+            ";}"  => "}", // Strip optional semicolons.
+            ",\n" => ",", // Don't wrap multiple selectors.
+            "\n}" => "}", // Don't wrap closing braces.
+            "} "  => "}\n", // Put each rule on it's own line.
+        );
+        $search = array_keys($replace);
+        $css = str_replace($search, $replace, $css);
+
+        return trim($css);
+    }
+
+    /**
      * @param $assetGroups
      * @param bool $minify
      * @return array
@@ -407,7 +438,7 @@ class Command extends IlluminateCommand {
                         $contents .= $fileBlock[ 'content' ];
                     }
                     $filename = "stylesheet-" . ($key+1) . ".css";
-                    file_put_contents( public_path( $filename ), $contents );
+                    file_put_contents( public_path( $filename ), $this->CSSStripWhitespace( $contents ) );
                     $newFileNames[] = '/' . $filename;
                 }
                 return $newFileNames;
