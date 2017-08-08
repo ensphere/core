@@ -2,6 +2,7 @@
 
 namespace EnsphereCore\Commands\Ensphere\Bower;
 
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Console\Command as IlluminateCommand;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputArgument;
@@ -451,14 +452,15 @@ class Command extends IlluminateCommand {
      */
     protected function getNewVersion()
     {
-        $versionFilePath = base_path( 'asset_version.json' );
-        if( ! file_exists( $versionFilePath ) ) {
-            file_put_contents( $versionFilePath, '{ "version" : "0000000001" }' );
+        $versionName = "asset_version.json";
+        $versionPath = "version/" . env( 'APP_ENV' ) . "/{$versionName}";
+        if( ! Storage::exists( $versionPath ) ) {
+            Storage::put( $versionPath, '{ "version" : "00000001000" }' );
         }
-        $versionFile = json_decode( file_get_contents( $versionFilePath ) );
+        $versionFile = json_decode( Storage::get( $versionPath ) );
         $version = (int)$versionFile->version;
         $newVersion = str_pad( ($version+1), 10, "0", STR_PAD_LEFT );
-        file_put_contents( $versionFilePath, '{ "version" : "' . $newVersion . '" }' );
+        Storage::put( $versionPath, '{ "version" : "' . $newVersion . '" }' );
         return $newVersion;
     }
 
