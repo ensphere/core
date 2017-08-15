@@ -35,6 +35,12 @@ class Command extends IlluminateCommand
         $this->migrateRun();
         $this->generateDotEnvFile();
         $this->sendCentralHubNotification();
+        $this->runPostComposer();
+    }
+
+    private function runPostComposer()
+    {
+        $this->info( shell_exec( "php artisan ensphere:post-process" ) );
     }
 
     /**

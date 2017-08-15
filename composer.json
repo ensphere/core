@@ -27,5 +27,10 @@
 	"config": {
 		"preferred-install": "dist",
 		"secure-http": false
-	}
+	},
+	 "scripts": {
+		 "pre-update-cmd" : [
+			 "php artisan ensphere:pre-process"
+		 ]
+	 }
 }

@@ -3,6 +3,8 @@
 namespace EnsphereCore;
 
 use EnsphereCore\Commands\Ensphere\InformCentralHub;
+use EnsphereCore\Commands\Ensphere\Process\PostProcessCommand;
+use EnsphereCore\Commands\Ensphere\Process\PreProcessCommand;
 use EnsphereCore\Libs\DotEnv\Stubs\AppUrl;
 use EnsphereCore\Libs\DotEnv\Stubs\FilesystemRoot;
 use EnsphereCore\Libs\Exceptions\Bucket;
@@ -27,44 +29,48 @@ use EnsphereCore\Commands\Ensphere\Extend\Command as ExtendCommand;
 use EnsphereCore\Libs\DotEnv\Registrar;
 use EnsphereCore\Libs\DotEnv\Commands\DotEnv;
 use EnsphereCore\Libs\Extending\Illuminate\Routing\UrlGenerator;
+use EnsphereCore\Libs\Processor\Registrar as ProcessorRegistrar;
 
 class AppServiceProvider extends ServiceProvider
 {
-	/**
-	 * Bootstrap any application services.
-	 *
-	 * @return void
-	 */
-	public function boot()
-	{
+    /**
+     * Bootstrap any application services.
+     *
+     * @return void
+     */
+    public function boot()
+    {
         $this->extendIlluminateRouting();
 
-		$this->app->booted( function( $app )
+        $this->app->booted( function( $app )
         {
-			$schedule = $app->make( Schedule::class );
-			$schedule->command( 'ensphere:external-assets' )->hourly();
 
-			$app[Registrar::class]->add( new FilesystemRoot );
+            app( ProcessorRegistrar::class )->processPreArtisan();
+
+            $schedule = $app->make( Schedule::class );
+            $schedule->command( 'ensphere:external-assets' )->hourly();
+
+            $app[Registrar::class]->add( new FilesystemRoot );
             $app[Registrar::class]->add( new AppUrl );
             $app['ensphere.exception.handler']->addHandler( new CSRFTokenMismatch() );
 
-		});
+        });
 
-		$this->publishes([
-			__DIR__ . '/../ensphere.assets.json' => base_path( 'EnsphereCore/ensphere-assets.json' ),
-			__DIR__ . '/../ensphere.registration.json' => base_path( 'EnsphereCore/ensphere-registration.json' ),
-			__DIR__ . '/../ensphere.external.assets.json' => base_path( 'EnsphereCore/ensphere-external-assets.json' )
-		], 'config' );
+        $this->publishes([
+            __DIR__ . '/../ensphere.assets.json' => base_path( 'EnsphereCore/ensphere-assets.json' ),
+            __DIR__ . '/../ensphere.registration.json' => base_path( 'EnsphereCore/ensphere-registration.json' ),
+            __DIR__ . '/../ensphere.external.assets.json' => base_path( 'EnsphereCore/ensphere-external-assets.json' )
+        ], 'config' );
 
-	}
+    }
 
-	/**
-	 * Register any application services.
-	 *
-	 * @return void
-	 */
-	public function register()
-	{
+    /**
+     * Register any application services.
+     *
+     * @return void
+     */
+    public function register()
+    {
 
         $this->app->singleton( Registrar::class, function( $app ){
             return new Registrar;
@@ -76,24 +82,30 @@ class AppServiceProvider extends ServiceProvider
             return new Bucket();
         });
 
-		$this->commands([
-			RenameCommand::class,
-			ExportCommand::class,
-			ImportCommand::class,
-			BowerCommand::class,
-			MigrateCommand::class,
-			RegistrationCommand::class,
-			InstallCommand::class,
-			UpdateCommand::class,
-			MakeCommand::class,
-			DatabaseCommand::class,
-			ModulesCommand::class,
-			ExternalAssetsCommand::class,
+        $this->app->singleton( ProcessorRegistrar::class, function( $app ) {
+            return new ProcessorRegistrar;
+        });
+
+        $this->commands([
+            RenameCommand::class,
+            ExportCommand::class,
+            ImportCommand::class,
+            BowerCommand::class,
+            MigrateCommand::class,
+            RegistrationCommand::class,
+            InstallCommand::class,
+            UpdateCommand::class,
+            MakeCommand::class,
+            DatabaseCommand::class,
+            ModulesCommand::class,
+            ExternalAssetsCommand::class,
             DotEnv::class,
             ExtendCommand::class,
-            InformCentralHub::class
-		]);
-	}
+            InformCentralHub::class,
+            PostProcessCommand::class,
+            PreProcessCommand::class
+        ]);
+    }
 
     /**
      * @return void
