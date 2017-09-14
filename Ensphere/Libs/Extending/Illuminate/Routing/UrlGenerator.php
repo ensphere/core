@@ -35,7 +35,14 @@ class UrlGenerator extends UrlGeneratorContract implements Blueprint
      */
     protected function toRoute($route, $parameters, $absolute)
     {
-        $parameters = $this->formatParameters($parameters) + $this->globalParameters;
+
+        $parameters = $this->formatParameters($parameters);
+
+        if( ! $parameters ) {
+            $parameters += [ null ] + $this->globalParameters;
+        } else {
+            $parameters += $this->globalParameters;
+        }
 
         $domain = $this->getRouteDomain($route, $parameters);
 
