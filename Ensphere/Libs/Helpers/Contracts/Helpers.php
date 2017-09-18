@@ -63,7 +63,7 @@ class Helpers implements HelpersBlueprint
             echo '
             <div class="ui error message">
                 <div class="header">
-                    There was some errors with your submission
+                    There were some errors with your submission
                 </div>
                 <ul class="list">';
                     foreach( $errors->all() as $error ) {
