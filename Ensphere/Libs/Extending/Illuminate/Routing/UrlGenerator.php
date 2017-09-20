@@ -38,12 +38,6 @@ class UrlGenerator extends UrlGeneratorContract implements Blueprint
 
         $parameters = $this->formatParameters($parameters);
 
-        if( ! $parameters ) {
-            $parameters += [ null ] + $this->globalParameters;
-        } else {
-            $parameters += $this->globalParameters;
-        }
-
         $domain = $this->getRouteDomain($route, $parameters);
 
         $uri = $this->addQueryString($this->trimUrl(
@@ -56,6 +50,14 @@ class UrlGenerator extends UrlGeneratorContract implements Blueprint
         }
 
         $uri = strtr(rawurlencode($uri), $this->dontEncode);
+
+        if( $this->globalParameters ) {
+            if( preg_match( "/\?/", $uri ) ) {
+                $uri .= '&' . http_build_query($this->globalParameters );
+            } else {
+                $uri .= '?' . http_build_query($this->globalParameters );
+            }
+        }
 
         return $absolute ? $uri : '/'.ltrim(str_replace($root, '', $uri), '/');
     }
