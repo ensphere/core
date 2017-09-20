@@ -1,4 +1,6 @@
-<?php namespace EnsphereCore\Libs\Config;
+<?php
+
+namespace EnsphereCore\Libs\Config;
 
 use DirectoryIterator;
 
