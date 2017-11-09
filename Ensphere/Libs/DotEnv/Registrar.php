@@ -83,7 +83,7 @@ class Registrar
             $newDotEnvLines[] = $line;
             if( $read ) {
                 foreach( $toAdd as $key => $value ) {
-                    $newDotEnvLines[] = "{$key}={$value}";
+                    $newDotEnvLines[] = "{$key}=\"{$value}\"";
                 }
                 $read = false;
             }
@@ -151,8 +151,8 @@ class Registrar
      */
     private function getKeyValuePair( $line )
     {
-        if( ! preg_match( "#^([A-Z_]+)=([^\s]+)$#", $line, $match ) ) {
-            if( ! preg_match( "#^([A-Z_]+)=\"([^\"])\"$#", $line, $match ) ) return false;
+        if( ! preg_match( "#^([A-Z_]+)=([^\s\"]+)$#", $line, $match ) ) {
+            if( ! preg_match( "#^([A-Z_]+)=\"([^\"]+)\"$#", $line, $match ) ) return false;
         }
         return [ $match[1] => $match[2] ];
     }
