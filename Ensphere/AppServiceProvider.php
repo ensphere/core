@@ -26,6 +26,7 @@ use EnsphereCore\Commands\Ensphere\Database\Command as DatabaseCommand;
 use EnsphereCore\Commands\Ensphere\Modules\Command as ModulesCommand;
 use EnsphereCore\Commands\Ensphere\ExternalAssets\Command as ExternalAssetsCommand;
 use EnsphereCore\Commands\Ensphere\Extend\Command as ExtendCommand;
+use EnsphereCore\Commands\Ensphere\Back\Resource\Command as BackResourceCommand;
 use EnsphereCore\Libs\DotEnv\Registrar;
 use EnsphereCore\Libs\DotEnv\Commands\DotEnv;
 use EnsphereCore\Libs\Extending\Illuminate\Routing\UrlGenerator;
@@ -105,7 +106,8 @@ class AppServiceProvider extends ServiceProvider
             ExtendCommand::class,
             InformCentralHub::class,
             PostProcessCommand::class,
-            PreProcessCommand::class
+            PreProcessCommand::class,
+            BackResourceCommand::class
         ]);
     }
 

@@ -1,0 +1,24 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Purposemedia\Users\Traits\Seeder;
+use {%NAMESPACE%}\MigrationSeeds\SeedPermissions{%DATE_ID%};
+
+class PermissionMigration{%DATE_ID%} extends Migration
+{
+
+    use Seeder;
+
+    protected $seeder = SeedPermissions{%DATE_ID%}::class;
+
+    /**
+     * Run the migrations.
+     *
+     * @return void
+     */
+    public function up()
+    {
+        $this->seed();
+    }
+
+}

@@ -1,0 +1,70 @@
+<?php
+
+namespace {%NAMESPACE%}\Routes;
+
+use Lukesnowden\Menu\Menu;
+
+class {%ROUTE_CLASS_NAME%}
+{
+
+    /**
+     * @var null
+     */
+    static $instance = null;
+
+    /**
+     * Routes
+     * @param $router
+    */
+    protected function _routes( $router )
+    {
+        $router->group( [ 'prefix' => '{%ROUTE_PREFIX%}', 'middleware' => [ 'web' ] ], function( $router ) {
+
+            $router->get( '/',              [ 'as' => 'get.{%ROUTE_NAME_PREFIX%}', 'uses' => '{%CONTROLLER_NAME%}@index' ] );
+            $router->get( '/create',        [ 'as' => 'get.{%ROUTE_NAME_PREFIX%}.create', 'uses' => '{%CONTROLLER_NAME%}@showCreate' ] );
+            $router->get( '/{id}/edit',     [ 'as' => 'get.{%ROUTE_NAME_PREFIX%}.edit', 'uses' => '{%CONTROLLER_NAME%}@showEdit' ] );
+            $router->get( '/{id}/delete',   [ 'as' => 'get.{%ROUTE_NAME_PREFIX%}.delete', 'uses' => '{%CONTROLLER_NAME%}@delete' ] );
+
+            $router->post( '/{id}/edit',    [ 'as' => 'post.{%ROUTE_NAME_PREFIX%}.edit', 'uses' => '{%CONTROLLER_NAME%}@edit' ] );
+            $router->post( '/create',       [ 'as' => 'post.{%ROUTE_NAME_PREFIX%}.create', 'uses' => '{%CONTROLLER_NAME%}@create' ] );
+
+        });
+        $this->addMenuItems();
+    }
+
+    /**
+     * Add Menu Items
+     *
+     * @return void
+     */
+    protected function addMenuItems()
+    {
+        $menuItems = [
+            [
+                'text' => '{%PLURAL_HEADING%}',
+                'URL' => 'route:get.{%ROUTE_NAME_PREFIX%}',
+                'reference' => 'get.{%ROUTE_NAME_PREFIX%}',
+                'weight' => 100,
+                'parent' => '',
+                'protected' => false,
+            ]
+        ];
+
+        foreach( $menuItems as $menuItem ) {
+            Menu::addItem( $menuItem )->toMenu( 'main' );
+        }
+    }
+
+    /**
+     * @param $name
+     * @param $arguments
+     */
+    public static function __callStatic( $name, $arguments )
+    {
+        if( is_null( self::$instance ) ) {
+            self::$instance = new self;
+        }
+        call_user_func_array( [ self::$instance, "_{$name}" ], $arguments );
+    }
+
+}

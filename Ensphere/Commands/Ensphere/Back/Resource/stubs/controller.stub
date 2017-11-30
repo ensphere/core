@@ -1,0 +1,90 @@
+<?php
+
+namespace {%NAMESPACE%}\Http\Controllers;
+
+use Illuminate\Foundation\Application;
+use Illuminate\Http\Request;
+use {%BLUEPRINT_NAMESPACE%}\{%BLUEPRINT_NAME%};
+use Purposemedia\Authentication\Http\Controllers\DashboardController;
+
+class {%CONTROLLER_NAME%} extends DashboardController
+{
+
+    /**
+     * @var {%BLUEPRINT_NAME%}
+     */
+    protected $repo;
+
+    /**
+     * @var mixed
+     */
+    protected $container;
+
+    /**
+     * {%CONTROLLER_NAME%} constructor.
+     * @param Application $app
+     * @param ResourceGroupsBlueprint $contract
+     */
+    public function __construct( Application $app, {%BLUEPRINT_NAME%} $contract )
+    {
+        parent::__construct( $app );
+        $this->middleware( 'permission' );
+        $this->repo = $contract;
+        $this->container = $app['ensphere.container'];
+        $this->render();
+    }
+
+    /**
+     * @return mixed
+     */
+    public function index()
+    {
+        if( ! is_null( $response = $this->repo->index( $this ) ) ) return $response;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function showCreate()
+    {
+        if( ! is_null( $response = $this->repo->showCreate( $this ) ) ) return $response;
+    }
+
+    /**
+     * @param Request $request
+     * @return mixed
+     */
+    public function create( Request $request )
+    {
+        if( ! is_null( $response = $this->repo->create( $this, $request ) ) ) return $response;
+    }
+
+    /**
+     * @param ${%ID_VARIABLE%}
+     * @return mixed
+     */
+    public function showEdit( ${%ID_VARIABLE%} )
+    {
+        if( ! is_null( $response = $this->repo->showEdit( $this, ${%ID_VARIABLE%} ) ) ) return $response;
+    }
+
+    /**
+     * @param Request $request
+     * @param ${%ID_VARIABLE%}
+     * @return mixed
+     */
+    public function edit( Request $request, ${%ID_VARIABLE%} )
+    {
+        if( ! is_null( $response = $this->repo->edit( $this, $request, ${%ID_VARIABLE%} ) ) ) return $response;
+    }
+
+    /**
+     * @param ${%ID_VARIABLE%}
+     * @return mixed
+     */
+    public function delete( ${%ID_VARIABLE%} )
+    {
+        if( ! is_null( $response = $this->repo->delete( $this, ${%ID_VARIABLE%} ) ) ) return $response;
+    }
+
+}
