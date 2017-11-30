@@ -6,11 +6,10 @@ use Illuminate\Console\Command;
 use Illuminate\Encryption\Encrypter;
 use GuzzleHttp\Client;
 use Exception;
-use STDclass;
+use STDClass;
 
 class InformCentralHub extends Command
 {
-
     /**
      * The name and signature of the console command.
      *
@@ -35,8 +34,6 @@ class InformCentralHub extends Command
      */
     protected $hubUrl = 'https://ensphere.purposemedia.co.uk';
 
-    //protected $hubUrl = 'http://127.0.0.1:8000';
-
     /**
      * @var
      */
@@ -46,6 +43,11 @@ class InformCentralHub extends Command
      * @var
      */
     protected $lock_file;
+
+    /**
+     * @var
+     */
+    protected $composerFile;
 
 
     /**
@@ -63,13 +65,14 @@ class InformCentralHub extends Command
      */
     public function handle()
     {
-        if( app()->isLocal() ) return;
-        /**
-         * No need to inform the hub if its local environment
-         */
+        if( app()->isLocal() ) {
+            $this->info( "no need to inform hub of local development..." );
+            return;
+        }
         try {
             $this->modules_file = base_path( 'modules.json' );
             $this->lock_file = base_path( 'composer.lock' );
+            $this->composerFile = base_path( 'composer.json' );
             $data = [
                 'domain' => config( 'app.url' ),
                 'server' => gethostbyname( config( 'app.url' ) ),
@@ -85,7 +88,7 @@ class InformCentralHub extends Command
             ] );
             $this->info( 'central hub informed...' );
         } catch( Exception $e ) {
-            $this->info( 'hub packet failed!' );
+            $this->info( 'hub packet failed...' );
         }
     }
 
@@ -114,10 +117,7 @@ class InformCentralHub extends Command
      */
     protected function getModules()
     {
-        if( ! file_exists( $this->modules_file ) ) {
-            file_put_contents( $this->modules_file, json_encode( new STDclass, JSON_PRETTY_PRINT|JSON_UNESCAPED_SLASHES ) );
-        }
-        return (array) json_decode( file_get_contents( $this->modules_file ) );
+        return (array) json_decode( file_get_contents( $this->composerFile ) )->require;
     }
 
     /**
@@ -126,7 +126,7 @@ class InformCentralHub extends Command
     protected function generateRandomKey()
     {
         return 'base64:' . base64_encode( random_bytes(
-            config( 'app.cipher' ) == 'AES-128-CBC' ? 16 : 32
-        ) );
+                config( 'app.cipher' ) == 'AES-128-CBC' ? 16 : 32
+            ) );
     }
 }
