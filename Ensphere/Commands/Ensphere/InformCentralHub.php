@@ -6,9 +6,11 @@ use Illuminate\Console\Command;
 use Illuminate\Encryption\Encrypter;
 use GuzzleHttp\Client;
 use Exception;
+use STDclass;
 
 class InformCentralHub extends Command
 {
+
     /**
      * The name and signature of the console command.
      *
@@ -23,14 +25,26 @@ class InformCentralHub extends Command
      */
     protected $description = 'Sends application and module information to central hub';
 
+    /**
+     * @var string
+     */
     protected $encryptionKey = 'base64:qKBpyYiWrVexrhb1P/wwPwio1ubMTGwYa7+TZcn7YeY=';
 
+    /**
+     * @var string
+     */
     protected $hubUrl = 'https://ensphere.purposemedia.co.uk';
 
     //protected $hubUrl = 'http://127.0.0.1:8000';
 
+    /**
+     * @var
+     */
     protected $modules_file;
 
+    /**
+     * @var
+     */
     protected $lock_file;
 
 
