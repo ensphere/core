@@ -1,0 +1,35 @@
+<?php
+
+namespace {%NAMESPACE%}\Models;
+
+use Illuminate\Database\Eloquent\Model;
+use Purposemedia\Authentication\Traits\ModelEventThrower;
+
+class {%MODEL_NAME%} extends Model
+{
+
+    use ModelEventThrower;
+
+    /**
+     * Table name
+     *
+     * @var string
+     */
+    protected $table = '{%TABLE_NAME%}';
+
+    /**
+     * Protected properties against the `create` method
+     *
+     * @var array
+     */
+    protected $guarded = ['id'];
+
+    /**
+     * @return string
+     */
+    public function getUrlAttribute()
+    {
+        return route( '{%URL_ROUTE%}', $this->id );
+    }
+
+}
