@@ -1,0 +1,19 @@
+<?php
+
+namespace {%NAMESPACE%}\MigrationSeeds;
+
+use Illuminate\Database\Seeder;
+use Purposemedia\Users\Traits\GroupPermissions;
+
+class SeedPermissions{%DATE_ID%} extends Seeder
+{
+
+    use GroupPermissions;
+
+    protected $groupName = '{%MODULE_HEADING%} Module';
+
+    protected $oldPermissions = [];
+
+    protected $newPermissions = [];
+
+}

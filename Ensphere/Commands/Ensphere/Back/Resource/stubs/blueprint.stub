@@ -1,8 +1,0 @@
-<?php
-
-namespace {%NAMESPACE%}\Contracts\Blueprints;
-
-interface {%BLUEPRINT_NAME%}
-{
-
-}
