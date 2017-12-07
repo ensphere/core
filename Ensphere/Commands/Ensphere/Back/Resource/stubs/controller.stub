@@ -23,7 +23,7 @@ class {%CONTROLLER_NAME%} extends DashboardController
     /**
      * {%CONTROLLER_NAME%} constructor.
      * @param Application $app
-     * @param ResourceGroupsBlueprint $contract
+     * @param {%BLUEPRINT_NAME%} $contract
      */
     public function __construct( Application $app, {%BLUEPRINT_NAME%} $contract )
     {

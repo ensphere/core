@@ -19,10 +19,10 @@
 
         {!! Form::model( null, [ 'route' => [ 'post.{%ROUTE_NAME_PREFIX%}.create' ], 'class' => 'form-horizontal form-label-left', 'novalidate' ] ) !!}
 
-            <div class="view__right-sidebar cf">
-                <div class="view__right-sidebar__left">
+            <div class="l-small-right-sidebar cf">
+                <div class="l-small-right-sidebar__left">
                 </div>
-                <div class="view__right-sidebar__right">
+                <div class="l-small-right-sidebar__right">
                 </div>
             </div>
 
