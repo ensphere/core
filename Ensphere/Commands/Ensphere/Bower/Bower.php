@@ -14,6 +14,7 @@ class Bower
      * @var array
      */
     protected $defined_js_file = [];
+    protected $env;
 
     /**
      * @var null
@@ -53,6 +54,12 @@ class Bower
     public function __construct( $name, $packageData )
     {
         $this->name = $name;
+        $this->env = app()->environment();
+
+        if( isset( $packageData->environments ) && isset( $packageData->environments->{$this->env} ) ) {
+            $packageData = $packageData->environments->{$this->env};
+        }
+
         $this->dependencies = isset( $packageData->dependencies ) ? $packageData->dependencies : [];
         $this->files = isset( $packageData->files ) ? $packageData->files : [];
         $this->defined_css_file = isset( $packageData->css_files ) ? $packageData->css_files : [];
