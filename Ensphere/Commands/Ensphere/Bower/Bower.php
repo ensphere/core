@@ -96,7 +96,7 @@ class Bower
      * @return array
      */
     public function getStyleFiles() {
-        $styles = $this->defined_js_file;
+        $styles = $this->defined_css_file;
         foreach( $this->files as $file ) {
             if( preg_match( "#css(\?.+)?$#is", $file ) ) {
                 if( preg_match( "#^https?#is", $file ) ) {
