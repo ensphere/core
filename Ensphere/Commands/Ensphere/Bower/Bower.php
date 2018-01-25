@@ -1,105 +1,112 @@
-<?php namespace EnsphereCore\Commands\Ensphere\Bower;
+<?php
 
-class Bower {
+namespace EnsphereCore\Commands\Ensphere\Bower;
 
-	/**
-	 * [$bower description]
-	 * @var null
-	 */
-	private $bower = null;
+class Bower
+{
 
-	/**
-	 * [$basePath description]
-	 * @var null
-	 */
-	private $basePath = null;
+    /**
+     * @var array
+     */
+    protected $defined_css_file = [];
 
-	/**
-	 * [$uri description]
-	 * @var null
-	 */
-	private $uri = null;
+    /**
+     * @var array
+     */
+    protected $defined_js_file = [];
 
-	/**
-	 * [$dependencies description]
-	 * @var array
-	 */
-	private $dependencies = array();
+    /**
+     * @var null
+     */
+    private $bower = null;
 
-	/**
-	 * [$name description]
-	 * @var null
-	 */
-	private $name = null;
+    /**
+     * @var null|string
+     */
+    private $basePath = null;
 
-	/**
-	 * [$files description]
-	 * @var array
-	 */
-	private $files = array();
+    /**
+     * @var mixed|null
+     */
+    private $uri = null;
 
-	/**
-	 * [__construct description]
-	 * @param [type] $path [description]
-	 */
-	public function __construct( $name, $packageData ) {
-		$this->name = $name;
-		$this->dependencies = isset( $packageData->dependencies ) ? $packageData->dependencies : array();
-		$this->files = isset( $packageData->files ) ? $packageData->files : array();
-		$this->basePath = public_path("vendor/{$name}/");
-		$this->uri = str_replace( public_path(), '', $this->basePath );
-	}
+    /**
+     * @var array
+     */
+    private $dependencies = [];
 
-	/**
-	 * [name description]
-	 * @return [type] [description]
-	 */
-	public function name() {
-		return $this->name;
-	}
+    /**
+     * @var null
+     */
+    private $name = null;
 
-	/**
-	 * [getDependencies description]
-	 * @return [type] [description]
-	 */
-	public function getDependencies() {
-		return $this->dependencies;
-	}
+    /**
+     * @var array
+     */
+    private $files = [];
 
-	/**
-	 * [getJavascriptFiles description]
-	 * @return [type] [description]
-	 */
-	public function getJavascriptFiles() {
-		$javascripts = [];
-		foreach( $this->files as $file ) {
-			if( preg_match( "#\.js$#is", $file ) ) {
-				if( preg_match( "#^https?#is", $file ) ) {
-					$javascripts[] = $file;
-				} else {
-					$javascripts[] = $this->uri . $file;
-				}
-			}
-		}
-		return $javascripts;
-	}
+    /**
+     * Bower constructor.
+     * @param $name
+     * @param $packageData
+     */
+    public function __construct( $name, $packageData )
+    {
+        $this->name = $name;
+        $this->dependencies = isset( $packageData->dependencies ) ? $packageData->dependencies : [];
+        $this->files = isset( $packageData->files ) ? $packageData->files : [];
+        $this->defined_css_file = isset( $packageData->css_files ) ? $packageData->css_files : [];
+        $this->defined_js_file = isset( $packageData->js_files ) ? $packageData->js_files : [];
+        $this->basePath = public_path("vendor/{$name}/");
+        $this->uri = str_replace( public_path(), '', $this->basePath );
+    }
 
-	/**
-	 * [getStyleFiles description]
-	 * @return [type] [description]
-	 */
-	public function getStyleFiles() {
-		$styles = [];
-		foreach( $this->files as $file ) {
-			if( preg_match( "#css(\?.+)?$#is", $file ) ) {
-				if( preg_match( "#^https?#is", $file ) ) {
-					$styles[] = $file;
-				} else {
-					$styles[] = $this->uri . $file;
-				}
-			}
-		}
-		return $styles;
-	}
+    /**
+     * @return null
+     */
+    public function name() {
+        return $this->name;
+    }
+
+    /**
+     * @return array
+     */
+    public function getDependencies() {
+        return $this->dependencies;
+    }
+
+    /**
+     * @return array
+     */
+    public function getJavascriptFiles() {
+        $javascripts = $this->defined_js_file;
+        foreach( $this->files as $file ) {
+            if( preg_match( "#\.js$#is", $file ) ) {
+                if( preg_match( "#^https?#is", $file ) ) {
+                    $javascripts[] = $file;
+                } else {
+                    $javascripts[] = $this->uri . $file;
+                }
+            }
+        }
+        return $javascripts;
+    }
+
+    /**
+     * @return array
+     */
+    public function getStyleFiles() {
+        $styles = $this->defined_js_file;
+        foreach( $this->files as $file ) {
+            if( preg_match( "#css(\?.+)?$#is", $file ) ) {
+                if( preg_match( "#^https?#is", $file ) ) {
+                    $styles[] = $file;
+                } else {
+                    $styles[] = $this->uri . $file;
+                }
+            }
+        }
+        return $styles;
+    }
 
 }
