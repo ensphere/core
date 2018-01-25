@@ -10,7 +10,8 @@ use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 use EnsphereCore\Commands\Ensphere\Traits\Module;
 
-class Command extends IlluminateCommand {
+class Command extends IlluminateCommand
+{
 
     use Module;
 
@@ -311,12 +312,12 @@ class Command extends IlluminateCommand {
     protected function externalAssetsToLocalAssets( $assetGroups )
     {
         $external = [ 'assets' => [] ];
-        $temp = [];
+        $temp = [ 'css' => [], 'js' => [] ];
         foreach( $assetGroups['stylesheets.css'] as $key => $stylesheet ) {
             if( preg_match( "#^https?#is", $stylesheet ) ) {
                 $external['assets'][] = $stylesheet;
                 $assetGroups['stylesheets.css'][$key] = "/external/" . sha1( $stylesheet ) . '.css';
-                $temp[] = [
+                $temp['css'][] = [
                     'rel' => $stylesheet,
                     'loc' => "/external/" . sha1( $stylesheet ) . '.css'
                 ];
@@ -326,13 +327,13 @@ class Command extends IlluminateCommand {
             if( preg_match( "#^https?#is", $javascript ) ) {
                 $external['assets'][] = $javascript;
                 $assetGroups['javascripts.js'][$key] = "/external/" . sha1( $javascript ) . '.js';
-                $temp[] = [
+                $temp['js'][] = [
                     'rel' => $javascript,
                     'loc' => "/external/" . sha1( $javascript ) . '.js'
                 ];
             }
         }
-        file_put_contents( base_path( 'EnsphereCore/ensphere-external-assets.json' ), json_encode( $external, JSON_PRETTY_PRINT ) );
+        file_put_contents( base_path( 'EnsphereCore/ensphere-external-assets.json' ), json_encode( $temp, JSON_PRETTY_PRINT ) );
         $this->call( 'ensphere:external-assets' );
         return $assetGroups;
     }
@@ -392,7 +393,8 @@ class Command extends IlluminateCommand {
                         $data .= $_data . '|--FILE--|';
                     } else {
                         if( $saveAs === 'javascripts.js' ) {
-                            $data .= "try { \n;(function(){\n" . $_data . "\n})();\n } catch(e) { console.log('[" . $asset . "]: ' + e.message );}\n";
+                            $data .= $_data . "\n";
+                            //$data .= "try { \n;(function(){\n" . $_data . "\n})();\n } catch(e) { console.log('[" . $asset . "]: ' + e.message );}\n";
                         }
                     }
                 }
