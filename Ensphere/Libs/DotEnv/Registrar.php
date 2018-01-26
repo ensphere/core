@@ -5,12 +5,24 @@ namespace EnsphereCore\Libs\DotEnv;
 class Registrar
 {
 
+    /**
+     * @var array
+     */
     protected $properties = [];
 
+    /**
+     * @var string
+     */
     private $startTag = '#ensphere-core-settings-start';
 
+    /**
+     * @var string
+     */
     private $endTag = '#ensphere-core-settings-end';
 
+    /**
+     * @var null
+     */
     private $dotEnvFileLines = null;
 
     /**
@@ -21,12 +33,97 @@ class Registrar
         array_push( $this->properties, $property );
     }
 
+    /**
+     * @return void
+     */
     public function generate()
     {
         if( ! $this->hasDotEnvFile() ) $this->createDotEnvFile();
-        if( ! $this->hasCoreSettingsBlockDefined() ) $this->addCoreSettingsBlock();
-        $this->addUndefinedPropertiesToDotEnvFileLines();
+
+        $lines = $this->getDotEnvFileLines();
+        $defined = [];
+        $others = [];
+        $inside = false;
+        foreach( $lines as $line ) {
+            $line = trim( $line );
+            if( $line === $this->startTag ) {
+                $inside = true; continue;
+            }
+            if( $line === $this->endTag ) {
+                $inside = false; continue;
+            }
+            $pair = array_map( function( $string ) {
+                return trim( $string, '"' );
+            }, explode( '=', $line ) );
+            if( isset( $pair[1] ) ) {
+                if( $inside ) {
+                    $defined[ $pair[ 0 ] ] = $pair[ 1 ];
+                } else {
+
+                    $others[ $pair[ 0 ] ] = $pair[ 1 ];
+                }
+            }
+        }
+
+        foreach( $this->properties as $propertyObj ) {
+            $key = $propertyObj->getKey();
+            if( isset( $defined[$key] ) && isset( $others[$key] ) ) {
+                // Defined in both for some reason... we'll delete the "others" one
+                unset( $defined[$key] );
+            }
+            elseif( isset( $others[$key] ) ) {
+                // Already defined... we'll move it the the correct place
+                $defined[$key] = $others[$key];
+                unset( $others[$key] );
+            }
+            elseif( ! isset( $defined[$key] ) ) {
+                // Not set in the defined so we'll add the default setting in there...
+                $defined[$key] = $propertyObj->getDefaultValue();
+            }
+        }
+
+        $defined = $this->sortAlphabetically( $defined );
+        $others = $this->sortAlphabetically( $others );
+
+        $file = '';
+
+        foreach( $others as $alphaBlock ) {
+            $file .= "\n";
+            foreach( $alphaBlock as $key => $value ) {
+                $file .= "{$key}=\"{$value}\"\n";
+            }
+        }
+
+        $file .= "\n" . $this->startTag . "\n";
+        foreach( $defined as $alphaBlock ) {
+            //$file .= "\n";
+            foreach( $alphaBlock as $key => $value ) {
+                $file .= "{$key}=\"{$value}\"\n";
+            }
+        }
+        $file .= $this->endTag . "\n";
+
+        $this->dotEnvFileLines = $file;
         $this->saveDotEnvFile();
+
+    }
+
+    /**
+     * @param $array
+     * @return array
+     */
+    protected function sortAlphabetically( $array )
+    {
+        ksort( $array );
+        $chunks = [];
+        foreach( $array as $key => $value ) {
+            $keyLetter = strtoupper( $key )[0];
+            if( ! isset( $chunks[$keyLetter] ) ) {
+                $chunks[$keyLetter] = [];
+            }
+            $chunks[$keyLetter][$key] = $value;
+        }
+        return $chunks;
     }
 
     /**
@@ -37,6 +134,9 @@ class Registrar
         return file_exists( base_path( '.env' ) );
     }
 
+    /**
+     * @return void
+     */
     private function createDotEnvFile()
     {
         touch( base_path( '.env' ) );
@@ -54,109 +154,17 @@ class Registrar
     }
 
     /**
-     * @return bool
+     * @return void
      */
-    private function hasCoreSettingsBlockDefined()
-    {
-        foreach( $this->getDotEnvFileLines() as $line ) {
-            if( $line === $this->startTag ) return true;
-        }
-        return false;
-    }
-
-    private function addCoreSettingsBlock()
-    {
-        $this->dotEnvFileLines = array_merge( $this->dotEnvFileLines, [
-            '',
-            $this->startTag,
-            $this->endTag
-        ]);
-    }
-
-    private function addUndefinedPropertiesToDotEnvFileLines()
-    {
-        $toAdd = $this->getUndefinedSettings();
-        $read = false;
-        $newDotEnvLines = [];
-        foreach( $this->dotEnvFileLines as $line ) {
-            if( $line === $this->startTag ) $read = true;
-            $newDotEnvLines[] = $line;
-            if( $read ) {
-                foreach( $toAdd as $key => $value ) {
-                    $newDotEnvLines[] = "{$key}=\"{$value}\"";
-                }
-                $read = false;
-            }
-        }
-        $this->dotEnvFileLines = $newDotEnvLines;
-    }
-
-    /**
-     * @return array
-     */
-    private function getUndefinedSettings()
-    {
-        $customDefined = [];
-        $defined = [];
-        $toAdd = [];
-        $read = false;
-        foreach( $this->dotEnvFileLines as $line ) {
-            if( $line === $this->startTag ) $read = true;
-            if( $line === $this->endTag ) $read = false;
-            if( $read ) {
-                if( $keyValuePair = $this->getKeyValuePair( $line ) ) {
-                    $defined[key( $keyValuePair )] = $keyValuePair[key( $keyValuePair )];
-                }
-            } else {
-                if( $keyValuePair = $this->getKeyValuePair( $line ) ) {
-                    $customDefined[key( $keyValuePair )] = $keyValuePair[key( $keyValuePair )];
-                }
-            }
-        }
-        foreach( $this->properties as $propertyObj ) {
-            if( ! isset( $defined[ $propertyObj->getKey() ] ) ) {
-                if( ! isset( $customDefined[ $propertyObj->getKey() ] ) ) {
-                    $toAdd[ $propertyObj->getKey() ] = $propertyObj->getDefaultValue();
-                } else {
-                    $toAdd[ $propertyObj->getKey() ] = $customDefined[ $propertyObj->getKey() ];
-                }
-            }
-        }
-        $this->removeDuplicates( $toAdd );
-        return $toAdd;
-    }
-
-    /**
-     * @param $toAdd
-     */
-    private function removeDuplicates( $toAdd )
-    {
-        foreach( $this->dotEnvFileLines as $key => $line ) {
-            if( $keyValuePair = $this->getKeyValuePair( $line ) ) {
-                if( isset( $toAdd[key( $keyValuePair )] ) ) {
-                    unset( $this->dotEnvFileLines[$key] );
-                }
-            }
-        }
-    }
-
     private function saveDotEnvFile()
     {
-        file_put_contents( base_path( '.env' ), implode( "\n", $this->dotEnvFileLines ) );
+        file_put_contents( base_path( '.env' ), $this->dotEnvFileLines );
     }
 
     /**
-     * @param $line
-     * @return array|bool
+     * @param $command
+     * @return void
      */
-    private function getKeyValuePair( $line )
-    {
-        if( ! preg_match( "#^([A-Z_]+)=([^\s\"]+)$#", $line, $match ) ) {
-            if( ! preg_match( "#^([A-Z_]+)=\"([^\"]+)\"$#", $line, $match ) ) return false;
-        }
-        return [ $match[1] => $match[2] ];
-    }
-
     public function showInfo( $command )
     {
         $command->info( "" );
