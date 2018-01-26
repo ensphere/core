@@ -52,9 +52,12 @@ class Registrar
             if( $line === $this->endTag ) {
                 $inside = false; continue;
             }
+            if( ! preg_match( '/^([^=]+)=(.+)$/', $line, $matches ) ) {
+                continue;
+            }
             $pair = array_map( function( $string ) {
                 return trim( $string, '"' );
-            }, explode( '=', $line ) );
+            }, [ $matches[1], $matches[2] ] );
             if( isset( $pair[1] ) ) {
                 if( $inside ) {
                     $defined[ $pair[ 0 ] ] = $pair[ 1 ];
