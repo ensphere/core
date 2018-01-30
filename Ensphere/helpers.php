@@ -45,3 +45,13 @@ function base_model_name( $model )
 {
     return app()->make( HelpersBlueprint::class )->baseModelName( $model );
 }
+
+/**
+ * @param $table
+ * @param $column
+ * @return mixed
+ */
+function has_index( $table, $column )
+{
+    return app()->make( HelpersBlueprint::class )->hasIndex( $table, $column );
+}

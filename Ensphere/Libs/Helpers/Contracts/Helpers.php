@@ -7,6 +7,7 @@ use EnsphereCore\Commands\Ensphere\Traits\Module;
 use Illuminate\Database\Eloquent\Model;
 use Purposemedia\FrontContainer\Models\Tracker;
 use ReflectionClass;
+use Schema;
 
 class Helpers implements HelpersBlueprint
 {
@@ -91,6 +92,19 @@ class Helpers implements HelpersBlueprint
             return $this->baseModelName( ( new $parentName ) );
         }
         return $modelName;
+    }
+
+    /**
+     * @param $table
+     * @param $column
+     * @return mixed
+     */
+    public function hasIndex( $table, $column )
+    {
+        $conn = Schema::getConnection();
+        $dbSchemaManager = $conn->getDoctrineSchemaManager();
+        $doctrineTable = $dbSchemaManager->listTableDetails( $table );
+        return $doctrineTable->hasIndex( "{$table}_{$column}_index" );
     }
 
 }
