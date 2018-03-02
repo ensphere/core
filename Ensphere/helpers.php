@@ -6,44 +6,54 @@ use EnsphereCore\Libs\Helpers\Contracts\Blueprints\HelpersBlueprint;
  * @param string $basename
  * @return mixed
  */
-function public_url( $basename = '' )
-{
-    return app()->make( HelpersBlueprint::class )->publicUrl( $basename );
+if( ! function_exists( 'public_url' ) ) {
+    function public_url( $basename = '' )
+    {
+        return app()->make( HelpersBlueprint::class )->publicUrl( $basename );
+    }
 }
 
 /**
  * @param string $basename
  * @return mixed
  */
-function public_img( $basename = '' )
-{
-    return app()->make( HelpersBlueprint::class )->publicImg( $basename );
+if( ! function_exists( 'public_img' ) ) {
+    function public_img( $basename = '' )
+    {
+        return app()->make( HelpersBlueprint::class )->publicImg( $basename );
+    }
 }
 
 /**
  * @return mixed
  */
-function display_success_message()
-{
-    return app()->make( HelpersBlueprint::class )->displaySuccessMessage();
+if( ! function_exists( 'display_success_message' ) ) {
+    function display_success_message()
+    {
+        return app()->make( HelpersBlueprint::class )->displaySuccessMessage();
+    }
 }
 
 /**
  * @param $errors
  * @return mixed
  */
-function display_error_messages( $errors )
-{
-    return app()->make( HelpersBlueprint::class )->displayErrorMessages( $errors );
+if( ! function_exists( 'display_error_messages' ) ) {
+    function display_error_messages( $errors )
+    {
+        return app()->make( HelpersBlueprint::class )->displayErrorMessages( $errors );
+    }
 }
 
 /**
  * @param $model
  * @return mixed
  */
-function base_model_name( $model )
-{
-    return app()->make( HelpersBlueprint::class )->baseModelName( $model );
+if( ! function_exists( 'base_model_name' ) ) {
+    function base_model_name( $model )
+    {
+        return app()->make( HelpersBlueprint::class )->baseModelName( $model );
+    }
 }
 
 /**
@@ -51,7 +61,9 @@ function base_model_name( $model )
  * @param $column
  * @return mixed
  */
-function has_index( $table, $column )
-{
-    return app()->make( HelpersBlueprint::class )->hasIndex( $table, $column );
+if( ! function_exists( 'has_index' ) ) {
+    function has_index( $table, $column )
+    {
+        return app()->make( HelpersBlueprint::class )->hasIndex( $table, $column );
+    }
 }

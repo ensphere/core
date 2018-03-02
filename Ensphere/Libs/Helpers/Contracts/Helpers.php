@@ -14,6 +14,9 @@ class Helpers implements HelpersBlueprint
 
     use Module;
 
+    /**
+     * @var array
+     */
     protected $module;
 
     /**
