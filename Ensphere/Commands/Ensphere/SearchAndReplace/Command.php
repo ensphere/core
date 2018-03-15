@@ -102,18 +102,32 @@ class Command extends IlluminateCommand
             foreach( $columnNames as $columnName ) {
                 $type = DB::connection()->getDoctrineColumn( $tableName, $columnName )->getType()->getName();
                 if( in_array( $type, [ 'string', 'text' ] ) ) {
-                    $queries[] = "select * from `{$tableName}` where `{$columnName}` like BINARY '%{$search}%'";
+                    $queries[] = [
+                        "query" => "select * from `{$tableName}` where `{$columnName}` like BINARY '%{$search}%'",
+                        "table" => $tableName,
+                        "column" => $columnName
+                    ];
                 }
             }
         }
+        $totalFound = 0;
         $found = [];
-        foreach( $queries as $query ) {
-            $results = DB::select( DB::raw( $query ) );
+        foreach( $queries as $queryBlock ) {
+            $results = DB::select( DB::raw( $queryBlock['query'] ) );
             if( ! empty( $results ) ) {
-                $found = array_merge( $found, $results );
+                if( ! isset( $found[ $queryBlock[ 'table' ] ] ) ) {
+                    $found[ $queryBlock[ 'table' ] ] = [];
+                }
+                $found[ $queryBlock[ 'table' ] ][ $queryBlock[ 'column' ] ] = count( $results );
+                $totalFound += count( $results );
             }
         }
-        $total = count($found);
-        $this->info( "There were {$total} occurrences found." );
+        $this->info( "There were {$totalFound} rows found;" );
+        foreach( $found as $tableName => $columns ) {
+            $this->line( "Table <fg=blue;>{$tableName}</>..." );
+            foreach( $columns as $columnName => $count ) {
+                $this->line( "\t<fg=blue;>{$columnName}:</> <fg=yellow;>{$count} row(s)</>");
+            }
+        }
     }
 }
