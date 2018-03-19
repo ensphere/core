@@ -24,6 +24,7 @@ use EnsphereCore\Commands\Ensphere\Install\Update\Command as UpdateCommand;
 use EnsphereCore\Commands\Ensphere\Make\Command as MakeCommand;
 use EnsphereCore\Commands\Ensphere\Database\Command as DatabaseCommand;
 use EnsphereCore\Commands\Ensphere\Modules\Command as ModulesCommand;
+use EnsphereCore\Commands\Ensphere\MediaCleanse\Command as MediaCleanseCommand;
 use EnsphereCore\Commands\Ensphere\SearchAndReplace\Command as SearchAndReplaceCommand;
 use EnsphereCore\Commands\Ensphere\ExternalAssets\Command as ExternalAssetsCommand;
 use EnsphereCore\Commands\Ensphere\Extend\Command as ExtendCommand;
@@ -111,7 +112,8 @@ class AppServiceProvider extends ServiceProvider
             PreProcessCommand::class,
             BackResourceCommand::class,
             MigrationSeedCommand::class,
-            SearchAndReplaceCommand::class
+            SearchAndReplaceCommand::class,
+            MediaCleanseCommand::class
         ]);
     }
 
