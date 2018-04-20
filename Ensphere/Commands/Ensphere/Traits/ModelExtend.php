@@ -49,7 +49,9 @@ trait ModelExtend
         if( ! $this->exists ) {
             return false;
         }
-        return self::$lastUpdated = $this->fill( $attributes )->save( $options );
+        $updated = $this->fill( $attributes )->save( $options );
+        self::$lastUpdated = $this;
+        return $updated;
     }
 
     /**
