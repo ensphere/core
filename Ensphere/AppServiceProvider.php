@@ -30,6 +30,7 @@ use EnsphereCore\Commands\Ensphere\ExternalAssets\Command as ExternalAssetsComma
 use EnsphereCore\Commands\Ensphere\Extend\Command as ExtendCommand;
 use EnsphereCore\Commands\Ensphere\Back\Resource\Command as BackResourceCommand;
 use EnsphereCore\Commands\Ensphere\Back\MigrationSeed\Command as MigrationSeedCommand;
+use EnsphereCore\Commands\Ensphere\JsRoutes\Command as JsRoutesCommand;
 use EnsphereCore\Libs\DotEnv\Registrar;
 use EnsphereCore\Libs\DotEnv\Commands\DotEnv;
 use EnsphereCore\Libs\Extending\Illuminate\Routing\UrlGenerator;
@@ -113,7 +114,8 @@ class AppServiceProvider extends ServiceProvider
             BackResourceCommand::class,
             MigrationSeedCommand::class,
             SearchAndReplaceCommand::class,
-            MediaCleanseCommand::class
+            MediaCleanseCommand::class,
+            JsRoutesCommand::class,
         ]);
     }
 

@@ -103,6 +103,8 @@ class Command extends IlluminateCommand
         $gitIgnoreFileSplit[] = '.DS_Store';
         $gitIgnoreFileSplit[] = '.idea';
         $gitIgnoreFileSplit[] = '.idea/*';
+        $gitIgnoreFileSplit[] = '/public/routes.json';
+        $gitIgnoreFileSplit[] = '/public/search.json';
         $gitIgnoreFileSplit[] = '/vendor';
         $gitIgnoreFileSplit[] = '/node_modules';
         $gitIgnoreFileSplit[] = '/bower_components';

@@ -36,11 +36,23 @@ class Command extends IlluminateCommand
         $this->generateDotEnvFile();
         $this->sendCentralHubNotification();
         $this->runPostComposer();
+        $this->generateRoutesForJavascript();
     }
 
+    /**
+     * @return void
+     */
     private function runPostComposer()
     {
         $this->info( shell_exec( "php artisan ensphere:post-process" ) );
+    }
+
+    /**
+     * @return void
+     */
+    private function generateRoutesForJavascript()
+    {
+        $this->info( shell_exec( "php artisan ensphere:jsroutes" ) );
     }
 
     /**
