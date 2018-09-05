@@ -82,6 +82,7 @@ class Helpers implements HelpersBlueprint
     /**
      * @param $model
      * @return string
+     * @throws \ReflectionException
      */
     public function baseModelName( $model )
     {
@@ -108,6 +109,14 @@ class Helpers implements HelpersBlueprint
         $dbSchemaManager = $conn->getDoctrineSchemaManager();
         $doctrineTable = $dbSchemaManager->listTableDetails( $table );
         return $doctrineTable->hasIndex( "{$table}_{$column}_index" );
+    }
+
+    /**
+     * @return string
+     */
+    public function routesJsonUrl()
+    {
+        return '/routes.json?c=' . substr( sha1( filemtime( public_path( 'routes.json' ) ) ), 0, 10 );
     }
 
 }

@@ -67,3 +67,10 @@ if( ! function_exists( 'has_index' ) ) {
         return app()->make( HelpersBlueprint::class )->hasIndex( $table, $column );
     }
 }
+
+if( ! function_exists( 'routes_json_url' ) ) {
+    function routes_json_url()
+    {
+        return app()->make( HelpersBlueprint::class )->routesJsonUrl();
+    }
+}
