@@ -37,15 +37,6 @@ class Command extends IlluminateCommand
         $this->sendCentralHubNotification();
         $this->runPostComposer();
         $this->generateRoutesForJavascript();
-        $this->generateViews();
-    }
-
-    /**
-     * @return void
-     */
-    protected function generateViews()
-    {
-        $this->info( shell_exec( "php artisan laraview:compile" ) );
     }
 
     /**
