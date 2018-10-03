@@ -37,6 +37,15 @@ class Command extends IlluminateCommand
         $this->sendCentralHubNotification();
         $this->runPostComposer();
         $this->generateRoutesForJavascript();
+        $this->generateViews();
+    }
+
+    /**
+     * @return void
+     */
+    protected function generateViews()
+    {
+        $this->info( shell_exec( "php artisan laraview:compile" ) );
     }
 
     /**
@@ -64,7 +73,7 @@ class Command extends IlluminateCommand
     }
 
     /**
-     *
+     * @return void
      */
     private function generateDotEnvFile()
     {
@@ -73,8 +82,7 @@ class Command extends IlluminateCommand
     }
 
     /**
-     * [migrateRun description]
-     * @return [type] [description]
+     * @return void
      */
     private function migrateRun()
     {
@@ -82,8 +90,7 @@ class Command extends IlluminateCommand
     }
 
     /**
-     * [generateRegistrationFile description]
-     * @return [type] [description]
+     * @return void
      */
     private function generateRegistrationFile()
     {
@@ -92,8 +99,7 @@ class Command extends IlluminateCommand
     }
 
     /**
-     * [publishVendorAssets description]
-     * @return [type] [description]
+     * @return void
      */
     private function publishVendorAssets()
     {
@@ -129,6 +135,9 @@ class Command extends IlluminateCommand
         $this->info( 'vendor migration files cleaned...' );
     }
 
+    /**
+     * @return void
+     */
     protected function deleteNonModulesVendorAssets()
     {
         $modulePackages = $this->getPackages( base_path( 'EnsphereCore' ) );
@@ -152,17 +161,15 @@ class Command extends IlluminateCommand
     }
 
     /**
-     * [getPackages description]
-     * @param  [type] $path [description]
-     * @return [type]       [description]
+     * @param $path
+     * @return mixed
      */
     private function getPackages( $path ) {
         return json_decode( file_get_contents( $path . '/ensphere-assets.json' ) );
     }
 
     /**
-     * [cleanModulePackageAssetFolders description]
-     * @return [type] [description]
+     * @return void
      */
     protected function cleanModulePackageAssetFolders()
     {
@@ -181,9 +188,7 @@ class Command extends IlluminateCommand
     }
 
     /**
-     * [deleteFolderAndContents description]
-     * @param  [type] $folderPath [description]
-     * @return [type]             [description]
+     * @param $folderPath
      */
     protected function deleteFolderAndContents( $folderPath )
     {
@@ -199,8 +204,7 @@ class Command extends IlluminateCommand
     }
 
     /**
-     * [combineVendorAssets description]
-     * @return [type] [description]
+     * @return void
      */
     private function combineDependencyAssets()
     {
@@ -209,8 +213,7 @@ class Command extends IlluminateCommand
     }
 
     /**
-     * [getArguments description]
-     * @return [type] [description]
+     * @return array
      */
     protected function getArguments()
     {
@@ -218,8 +221,7 @@ class Command extends IlluminateCommand
     }
 
     /**
-     * [getOptions description]
-     * @return [type] [description]
+     * @return array
      */
     protected function getOptions()
     {
