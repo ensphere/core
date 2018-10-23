@@ -8,6 +8,8 @@
  		"matthiasmullie/minify": "1.3.*",
  		"lukesnowden/composer-bower-plugin": "^1.0",
 		"lukesnowden/relationship-macros": "*",
+		"lukesnowden/filterable": "*",
+		"lukesnowden/laraview": "*",
 		"ensphere/module-composer" : "^1.0",
 		"ensphere/container" : "*"
  	},
