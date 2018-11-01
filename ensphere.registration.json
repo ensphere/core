@@ -12,7 +12,8 @@
 		"Ensphere\\Ensphere\\Providers\\AppServiceProvider",
 		"Ensphere\\Ensphere\\Providers\\ConfigServiceProvider",
 		"Ensphere\\Ensphere\\Providers\\EventServiceProvider",
-		"Ensphere\\Ensphere\\Providers\\RouteServiceProvider"
+		"Ensphere\\Ensphere\\Providers\\RouteServiceProvider",
+		"Laraview\\Providers\\AppServiceProvider"
 	],
 	"aliases" : {
 

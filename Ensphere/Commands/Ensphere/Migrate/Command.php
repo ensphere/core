@@ -42,6 +42,7 @@ class Command extends IlluminateCommand
      */
     public function fire()
     {
+        event( 'ensphere.migrate.before', [ [ 'console' => $this ] ] );
         $this->currentStructure = $this->getCurrentVendorAndModuleName();
         switch( $this->argument('migration_command') ) {
             case 'run' :
@@ -51,6 +52,7 @@ class Command extends IlluminateCommand
                 $this->createMigration();
                 break;
         }
+        event( 'ensphere.migrate.after', [ [ 'console' => $this ] ] );
     }
 
     /**
